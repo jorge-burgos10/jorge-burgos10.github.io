@@ -6,11 +6,11 @@
   <meta name="description" content="Jorge Burgos — Computer Engineering student at UPRM. Portfolio, projects, and contact." />
   <title>Jorge Burgos — Computer Engineering @ UPRM</title>
 
-  <!-- Google Fonts: JetBrains Mono for headings, Inter for body text -->
+  <!-- Google Fonts: JetBrains Mono for headings/code, Inter for body text -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=JetBrains+Mono:wght@500;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap"
     rel="stylesheet"
   />
 
@@ -19,12 +19,14 @@
        Design tokens
        ============================================================ */
     :root {
-      --bg: #0e1116;          /* page background */
-      --bg-alt: #161b22;      /* card / surface background */
-      --text: #d6dde6;        /* primary text */
-      --text-muted: #8b96a3;  /* secondary text */
-      --accent: #4d9fb8;      /* single muted teal accent */
-      --border: #232a33;      /* subtle separators only */
+      --bg: #0d1117;          /* page background */
+      --bg-card: #151b23;     /* card / surface background */
+      --bg-chip: #1c242e;     /* chips and small tags */
+      --text: #e2e8f0;        /* primary text */
+      --text-muted: #94a3b3;  /* secondary text */
+      --accent: #56b6c2;      /* single muted teal accent */
+      --accent-dim: rgba(86, 182, 194, 0.12);
+      --border: #232b36;      /* subtle separators */
       --font-mono: "JetBrains Mono", monospace;
       --font-body: "Inter", system-ui, sans-serif;
     }
@@ -46,8 +48,8 @@
       background: var(--bg);
       color: var(--text);
       font-family: var(--font-body);
-      font-size: 1rem;
-      line-height: 1.7;
+      font-size: 0.975rem;
+      line-height: 1.6;
       -webkit-font-smoothing: antialiased;
     }
 
@@ -66,29 +68,42 @@
       text-decoration: underline;
     }
 
-    /* Shared section layout */
-    section {
-      max-width: 860px;
+    /* Shared section layout — compact vertical rhythm */
+    .wrap {
+      max-width: 920px;
       margin: 0 auto;
-      padding: 4.5rem 1.5rem;
+      padding: 0 1.5rem;
     }
 
-    /* Section headings prefixed with a mono-style marker */
+    section {
+      padding: 3.25rem 0;
+      border-top: 1px solid var(--border);
+    }
+
+    section:first-of-type {
+      border-top: none;
+    }
+
+    /* Numbered section headings, e.g. "01 // projects" */
     .section-title {
-      font-size: 1.35rem;
-      margin-bottom: 2rem;
+      font-size: 1.2rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: baseline;
+      gap: 0.6rem;
     }
 
-    .section-title::before {
-      content: "// ";
+    .section-title .num {
       color: var(--accent);
+      font-size: 0.85rem;
+      font-weight: 400;
     }
 
     /* Subtle fade-in on scroll (the only animation on the page) */
     .fade-in {
       opacity: 0;
-      transform: translateY(12px);
-      transition: opacity 0.6s ease, transform 0.6s ease;
+      transform: translateY(10px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
     }
 
     .fade-in.visible {
@@ -96,7 +111,6 @@
       transform: none;
     }
 
-    /* Respect users who prefer reduced motion */
     @media (prefers-reduced-motion: reduce) {
       html {
         scroll-behavior: auto;
@@ -109,38 +123,131 @@
     }
 
     /* ============================================================
+       Top navigation
+       ============================================================ */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(13, 17, 23, 0.92);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-inner {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 0.8rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+    }
+
+    .nav-name {
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    .nav-name .accent {
+      color: var(--accent);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.4rem;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+    }
+
+    .nav-links a:hover,
+    .nav-links a:focus-visible {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    /* ============================================================
        Hero
        ============================================================ */
     .hero {
-      min-height: 80vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
+      padding: 5rem 0 3.5rem;
+    }
+
+    .hero-kicker {
+      font-family: var(--font-mono);
+      color: var(--accent);
+      font-size: 0.85rem;
+      margin-bottom: 0.75rem;
     }
 
     .hero h1 {
-      font-size: clamp(2rem, 6vw, 3.25rem);
-      margin-bottom: 0.5rem;
+      font-size: clamp(2.1rem, 6vw, 3rem);
+      margin-bottom: 0.35rem;
+      letter-spacing: -0.02em;
     }
 
     .hero .title {
       font-family: var(--font-mono);
-      color: var(--accent);
-      font-size: clamp(1rem, 3vw, 1.2rem);
-      margin-bottom: 1.25rem;
+      color: var(--text-muted);
+      font-size: clamp(0.95rem, 3vw, 1.1rem);
+      margin-bottom: 1rem;
     }
 
     .hero .tagline {
       color: var(--text-muted);
-      max-width: 36rem;
-      margin-bottom: 2rem;
+      max-width: 38rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero .tagline strong {
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    /* Quick facts row: location, graduation, availability */
+    .hero-facts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem 1.75rem;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 1.75rem;
+    }
+
+    .hero-facts span::before {
+      content: "▸ ";
+      color: var(--accent);
     }
 
     .hero-links {
       display: flex;
-      gap: 1.5rem;
+      gap: 0.9rem;
+    }
+
+    .btn {
       font-family: var(--font-mono);
-      font-size: 0.95rem;
+      font-size: 0.85rem;
+      padding: 0.55rem 1.1rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      transition: border-color 0.2s ease, background 0.2s ease;
+    }
+
+    .btn:hover,
+    .btn:focus-visible {
+      text-decoration: none;
+      border-color: var(--accent);
+      background: var(--accent-dim);
+    }
+
+    .btn-primary {
+      border-color: var(--accent);
+      color: var(--accent);
     }
 
     /* ============================================================
@@ -148,17 +255,30 @@
        ============================================================ */
     .projects-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 1.25rem;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.1rem;
     }
 
     .project-card {
-      background: var(--bg-alt);
+      background: var(--bg-card);
       border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 1.25rem;
+      border-radius: 8px;
+      padding: 1.4rem;
       display: flex;
       flex-direction: column;
+      gap: 0.7rem;
+      transition: border-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .project-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .project-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
       gap: 0.75rem;
     }
 
@@ -167,10 +287,35 @@
       word-break: break-word;
     }
 
-    .project-card p {
+    .project-status {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--accent);
+      background: var(--accent-dim);
+      padding: 0.15rem 0.55rem;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    .project-card > p {
       color: var(--text-muted);
       font-size: 0.9rem;
-      flex-grow: 1; /* pushes the footer row to the bottom */
+      flex-grow: 1; /* pushes tags + footer to the bottom */
+    }
+
+    .project-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+    }
+
+    .project-tags span {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      background: var(--bg-chip);
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
     }
 
     .project-meta {
@@ -179,6 +324,8 @@
       align-items: center;
       font-family: var(--font-mono);
       font-size: 0.8rem;
+      padding-top: 0.4rem;
+      border-top: 1px solid var(--border);
     }
 
     .language-badge {
@@ -187,87 +334,116 @@
 
     .language-badge::before {
       content: "● ";
-      font-size: 0.65rem;
-    }
-
-    .projects-status {
-      color: var(--text-muted);
-      font-family: var(--font-mono);
-      font-size: 0.9rem;
+      font-size: 0.6rem;
     }
 
     /* ============================================================
        Skills
        ============================================================ */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.1rem;
+    }
+
     .skills-group {
-      margin-bottom: 1.75rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.2rem 1.4rem;
     }
 
     .skills-group h3 {
-      font-size: 0.95rem;
+      font-size: 0.8rem;
+      color: var(--accent);
+      font-weight: 500;
+      margin-bottom: 0.8rem;
+      text-transform: lowercase;
+    }
+
+    .skills-group h3::before {
+      content: "$ ";
       color: var(--text-muted);
-      margin-bottom: 0.75rem;
     }
 
     .skills-list {
       list-style: none;
       display: flex;
       flex-wrap: wrap;
-      gap: 0.6rem;
+      gap: 0.45rem;
     }
 
     .skills-list li {
       font-family: var(--font-mono);
-      font-size: 0.85rem;
-      background: var(--bg-alt);
-      border: 1px solid var(--border);
+      font-size: 0.8rem;
+      background: var(--bg-chip);
       border-radius: 4px;
-      padding: 0.3rem 0.7rem;
+      padding: 0.25rem 0.6rem;
     }
 
     /* ============================================================
-       About
+       About — English / Spanish side by side on desktop
        ============================================================ */
-    .about p {
-      max-width: 42rem;
-      margin-bottom: 1.25rem;
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.75rem;
     }
 
-    .about .es {
+    .about-col .lang-label {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+
+    .about-col p {
       color: var(--text-muted);
+      font-size: 0.92rem;
+    }
+
+    .about-col p strong {
+      color: var(--text);
+      font-weight: 500;
     }
 
     /* ============================================================
        Contact + footer
        ============================================================ */
-    .contact a {
-      font-family: var(--font-mono);
-      font-size: 1.05rem;
+    .contact p {
+      color: var(--text-muted);
+      max-width: 34rem;
+      margin-bottom: 1.25rem;
     }
 
     footer {
       text-align: center;
       color: var(--text-muted);
-      font-size: 0.8rem;
-      padding: 2rem 1.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      padding: 1.75rem 1.5rem;
       border-top: 1px solid var(--border);
     }
 
     /* ============================================================
        Mobile adjustments
        ============================================================ */
-    @media (max-width: 600px) {
+    @media (max-width: 640px) {
       section {
-        padding: 3rem 1.25rem;
+        padding: 2.5rem 0;
       }
 
       .hero {
-        min-height: 70vh;
+        padding: 3.5rem 0 2.5rem;
       }
 
-      .hero-links {
-        flex-direction: column;
-        gap: 0.75rem;
+      .about-grid {
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+      }
+
+      .nav-links {
+        gap: 1rem;
       }
     }
   </style>
@@ -275,181 +451,225 @@
 
 <body>
   <!-- ============================================================
-       1. Hero
+       Top navigation
        ============================================================ -->
-  <section class="hero fade-in">
-    <h1>Jorge Burgos</h1>
-    <p class="title">Computer Engineering Student @ UPRM</p>
-    <p class="tagline">
-      Building backend systems and exploring AI. Graduating May 2027.
-    </p>
-    <div class="hero-links">
-      <a href="https://github.com/jorge-burgos10" target="_blank" rel="noopener noreferrer">github →</a>
-      <a href="https://www.linkedin.com/in/jorge-burgos-b5a8748a/" target="_blank" rel="noopener noreferrer">linkedin →</a>
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="#top" class="nav-name">jorge<span class="accent">@</span>uprm<span class="accent">:~$</span></a>
+      <div class="nav-links">
+        <a href="#projects">projects</a>
+        <a href="#skills">skills</a>
+        <a href="#about">about</a>
+        <a href="#contact">contact</a>
+      </div>
     </div>
-  </section>
+  </nav>
 
-  <!-- ============================================================
-       2. Projects (populated from the GitHub API)
-       ============================================================ -->
-  <section id="projects" class="fade-in">
-    <h2 class="section-title">projects</h2>
-    <p class="projects-status" id="projects-status">Loading repositories…</p>
-    <div class="projects-grid" id="projects-grid"></div>
-  </section>
+  <main class="wrap" id="top">
+    <!-- ============================================================
+         1. Hero
+         ============================================================ -->
+    <section class="hero fade-in">
+      <p class="hero-kicker">Hi, my name is</p>
+      <h1>Jorge Burgos</h1>
+      <p class="title">Computer Engineering Student @ UPRM</p>
+      <p class="tagline">
+        I build <strong>backend systems</strong> — REST APIs, ETL pipelines,
+        and geospatial databases — and I'm exploring <strong>AI</strong> and
+        <strong>computer architecture</strong> along the way.
+      </p>
+      <div class="hero-facts">
+        <span>Mayagüez, Puerto Rico</span>
+        <span>B.S. May 2027</span>
+        <span>Open to internships</span>
+      </div>
+      <div class="hero-links">
+        <a class="btn" href="https://github.com/jorge-burgos10" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <a class="btn" href="https://www.linkedin.com/in/jorge-burgos-b5a8748a/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+        <a class="btn" href="mailto:jorgeburgos859@gmail.com">Email</a>
+      </div>
+    </section>
 
-  <!-- ============================================================
-       3. Skills
-       ============================================================ -->
-  <section id="skills" class="fade-in">
-    <h2 class="section-title">skills</h2>
+    <!-- ============================================================
+         2. Projects (curated list, rendered by JS below)
+         ============================================================ -->
+    <section id="projects" class="fade-in">
+      <h2 class="section-title"><span class="num">01</span> projects</h2>
+      <div class="projects-grid" id="projects-grid"></div>
+    </section>
 
-    <div class="skills-group">
-      <h3>Languages</h3>
-      <ul class="skills-list">
-        <li>Python</li>
-        <li>Java</li>
-        <li>SQL</li>
-        <li>JavaScript</li>
-      </ul>
-    </div>
+    <!-- ============================================================
+         3. Skills
+         ============================================================ -->
+    <section id="skills" class="fade-in">
+      <h2 class="section-title"><span class="num">02</span> skills</h2>
+      <div class="skills-grid">
+        <div class="skills-group">
+          <h3>languages</h3>
+          <ul class="skills-list">
+            <li>Python</li>
+            <li>Java</li>
+            <li>SQL</li>
+            <li>JavaScript</li>
+          </ul>
+        </div>
 
-    <div class="skills-group">
-      <h3>Frameworks</h3>
-      <ul class="skills-list">
-        <li>FastAPI</li>
-        <li>React</li>
-        <li>Streamlit</li>
-      </ul>
-    </div>
+        <div class="skills-group">
+          <h3>frameworks</h3>
+          <ul class="skills-list">
+            <li>FastAPI</li>
+            <li>React</li>
+            <li>Streamlit</li>
+          </ul>
+        </div>
 
-    <div class="skills-group">
-      <h3>Tools</h3>
-      <ul class="skills-list">
-        <li>PostgreSQL</li>
-        <li>PostGIS</li>
-        <li>Git</li>
-        <li>Docker</li>
-      </ul>
-    </div>
-  </section>
+        <div class="skills-group">
+          <h3>tools</h3>
+          <ul class="skills-list">
+            <li>PostgreSQL</li>
+            <li>PostGIS</li>
+            <li>Git</li>
+            <li>Docker</li>
+          </ul>
+        </div>
+      </div>
+    </section>
 
-  <!-- ============================================================
-       4. About (bilingual: English / Spanish)
-       ============================================================ -->
-  <section id="about" class="about fade-in">
-    <h2 class="section-title">about</h2>
-    <p>
-      I'm a Computer Engineering student at the University of Puerto Rico,
-      Mayagüez, graduating in May 2027. I'm interested in artificial
-      intelligence, backend development, and systems — I enjoy building
-      software that is reliable, well-structured, and solves real problems.
-    </p>
-    <p class="es" lang="es">
-      Soy estudiante de Ingeniería en Computadoras en la Universidad de
-      Puerto Rico, Mayagüez, y me graduaré en mayo de 2027. Me interesan la
-      inteligencia artificial, el desarrollo backend y los sistemas — disfruto
-      construir software confiable y bien estructurado que resuelva problemas
-      reales.
-    </p>
-  </section>
+    <!-- ============================================================
+         4. About (bilingual: English / Spanish)
+         ============================================================ -->
+    <section id="about" class="fade-in">
+      <h2 class="section-title"><span class="num">03</span> about</h2>
+      <div class="about-grid">
+        <div class="about-col">
+          <p class="lang-label">[ EN ]</p>
+          <p>
+            I'm a Computer Engineering student at the
+            <strong>University of Puerto Rico, Mayagüez</strong>, graduating in
+            May 2027. I'm interested in <strong>artificial intelligence</strong>,
+            <strong>backend development</strong>, and <strong>systems</strong> —
+            I enjoy building software that is reliable, well-structured, and
+            solves real problems.
+          </p>
+        </div>
+        <div class="about-col" lang="es">
+          <p class="lang-label">[ ES ]</p>
+          <p>
+            Soy estudiante de Ingeniería en Computadoras en la
+            <strong>Universidad de Puerto Rico, Mayagüez</strong>, y me graduaré
+            en mayo de 2027. Me interesan la <strong>inteligencia artificial</strong>,
+            el <strong>desarrollo backend</strong> y los <strong>sistemas</strong> —
+            disfruto construir software confiable y bien estructurado que
+            resuelva problemas reales.
+          </p>
+        </div>
+      </div>
+    </section>
 
-  <!-- ============================================================
-       5. Contact
-       ============================================================ -->
-  <section id="contact" class="contact fade-in">
-    <h2 class="section-title">contact</h2>
-    <a href="mailto:jorgeburgos859@gmail.com">jorgeburgos859@gmail.com</a>
-  </section>
+    <!-- ============================================================
+         5. Contact
+         ============================================================ -->
+    <section id="contact" class="contact fade-in">
+      <h2 class="section-title"><span class="num">04</span> contact</h2>
+      <p>
+        Interested in working together, or have an internship opportunity in
+        backend, databases, or systems? My inbox is open.
+      </p>
+      <a class="btn btn-primary" href="mailto:jorgeburgos859@gmail.com">jorgeburgos859@gmail.com</a>
+    </section>
+  </main>
 
   <footer>
-    © 2026 Jorge Burgos · Hosted on GitHub Pages
+    © 2026 Jorge Burgos · Built with plain HTML/CSS/JS · Hosted on GitHub Pages
   </footer>
 
   <script>
     /* ============================================================
-       GitHub projects
+       Projects
        ------------------------------------------------------------
-       Fetches public repos, filters out forks and repos without a
-       description, and renders them as cards in the Projects grid.
+       Curated list of featured repositories. Each entry renders as
+       a card with description, tech tags, status, and repo link.
        ============================================================ */
+    const PROJECTS = [
+      {
+        name: "EV Charging Station Reservation System",
+        description:
+          "Console-based reservation platform for personal electric vehicles " +
+          "at 5 UPRM campus charging stations. Uses HashSet, HashMap, " +
+          "LinkedList queues, and a Stack-based undo system, enforcing " +
+          "booking rules with LocalDateTime and credit-based pricing.",
+        language: "Java",
+        tags: ["Java", "Collections", "OOP"],
+        status: "Completed",
+        url: "https://github.com/jorge-burgos10/EV-Charging-Station-Reservation-System",
+      },
+      {
+        name: "PA-RISC Pipelined Processor",
+        description:
+          "Fully pipelined PA-RISC processor in Verilog with 5 stages " +
+          "(IF → ID → EX → MEM → WB), hazard detection, a 32-bit ALU with " +
+          "ZNVC flags, control unit, and a self-contained test bench with " +
+          "binary program loading via $readmemb.",
+        language: "Verilog",
+        tags: ["Verilog", "Icarus Verilog", "Computer Architecture"],
+        status: "Completed",
+        url: "https://github.com/jorge-burgos10/pa-risc-ppu",
+      },
+    ];
 
-    const GITHUB_USERNAME = "jorge-burgos10";
-
-    const API_URL =
-      `https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated&per_page=20`;
-
-    async function loadProjects() {
-      const grid = document.getElementById("projects-grid");
-      const status = document.getElementById("projects-status");
-
-      try {
-        const response = await fetch(API_URL);
-        if (!response.ok) {
-          throw new Error(`GitHub API responded with ${response.status}`);
-        }
-
-        const repos = await response.json();
-
-        // Keep only original repos that have a description
-        const projects = repos.filter(
-          (repo) => !repo.fork && repo.description
-        );
-
-        if (projects.length === 0) {
-          status.textContent = "No projects to show yet.";
-          return;
-        }
-
-        status.remove();
-        projects.forEach((repo) => grid.appendChild(buildCard(repo)));
-      } catch (error) {
-        status.textContent =
-          "Could not load projects from GitHub. Visit my profile instead.";
-        console.error("Failed to load GitHub repos:", error);
-      }
-    }
-
-    // Builds a single project card using DOM APIs (avoids innerHTML
-    // so repo names/descriptions are always treated as plain text).
-    function buildCard(repo) {
+    // Builds cards with DOM APIs (textContent) so all project data
+    // is treated as plain text, never injected as HTML.
+    function buildCard(project) {
       const card = document.createElement("article");
       card.className = "project-card";
 
+      const head = document.createElement("div");
+      head.className = "project-head";
+
       const name = document.createElement("h3");
-      name.textContent = repo.name;
+      name.textContent = project.name;
+      head.appendChild(name);
+
+      const status = document.createElement("span");
+      status.className = "project-status";
+      status.textContent = project.status;
+      head.appendChild(status);
 
       const description = document.createElement("p");
-      description.textContent = repo.description;
+      description.textContent = project.description;
+
+      const tags = document.createElement("div");
+      tags.className = "project-tags";
+      project.tags.forEach((tag) => {
+        const chip = document.createElement("span");
+        chip.textContent = tag;
+        tags.appendChild(chip);
+      });
 
       const meta = document.createElement("div");
       meta.className = "project-meta";
 
-      if (repo.language) {
-        const badge = document.createElement("span");
-        badge.className = "language-badge";
-        badge.textContent = repo.language;
-        meta.appendChild(badge);
-      }
+      const badge = document.createElement("span");
+      badge.className = "language-badge";
+      badge.textContent = project.language;
+      meta.appendChild(badge);
 
       const link = document.createElement("a");
-      link.href = repo.html_url;
+      link.href = project.url;
       link.target = "_blank";
       link.rel = "noopener noreferrer";
       link.textContent = "view repo →";
       meta.appendChild(link);
 
-      card.append(name, description, meta);
+      card.append(head, description, tags, meta);
       return card;
     }
 
-    loadProjects();
+    const grid = document.getElementById("projects-grid");
+    PROJECTS.forEach((project) => grid.appendChild(buildCard(project)));
 
     /* ============================================================
        Subtle fade-in on scroll
-       ------------------------------------------------------------
-       Sections start slightly translated/transparent and become
-       visible once they enter the viewport.
        ============================================================ */
     const observer = new IntersectionObserver(
       (entries) => {
