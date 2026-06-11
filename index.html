@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Jorge Burgos — Computer Engineering student at UPRM. Portfolio, projects, and contact." />
+  <title>Jorge Burgos — Computer Engineering @ UPRM</title>
+
+  <!-- Google Fonts: JetBrains Mono for headings, Inter for body text -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=JetBrains+Mono:wght@500;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    /* ============================================================
+       Design tokens
+       ============================================================ */
+    :root {
+      --bg: #0e1116;          /* page background */
+      --bg-alt: #161b22;      /* card / surface background */
+      --text: #d6dde6;        /* primary text */
+      --text-muted: #8b96a3;  /* secondary text */
+      --accent: #4d9fb8;      /* single muted teal accent */
+      --border: #232a33;      /* subtle separators only */
+      --font-mono: "JetBrains Mono", monospace;
+      --font-body: "Inter", system-ui, sans-serif;
+    }
+
+    /* ============================================================
+       Base
+       ============================================================ */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 1rem;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    h1, h2, h3 {
+      font-family: var(--font-mono);
+      line-height: 1.25;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    a:hover,
+    a:focus-visible {
+      text-decoration: underline;
+    }
+
+    /* Shared section layout */
+    section {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 4.5rem 1.5rem;
+    }
+
+    /* Section headings prefixed with a mono-style marker */
+    .section-title {
+      font-size: 1.35rem;
+      margin-bottom: 2rem;
+    }
+
+    .section-title::before {
+      content: "// ";
+      color: var(--accent);
+    }
+
+    /* Subtle fade-in on scroll (the only animation on the page) */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .fade-in.visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    /* Respect users who prefer reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+      .fade-in {
+        opacity: 1;
+        transform: none;
+        transition: none;
+      }
+    }
+
+    /* ============================================================
+       Hero
+       ============================================================ */
+    .hero {
+      min-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .hero h1 {
+      font-size: clamp(2rem, 6vw, 3.25rem);
+      margin-bottom: 0.5rem;
+    }
+
+    .hero .title {
+      font-family: var(--font-mono);
+      color: var(--accent);
+      font-size: clamp(1rem, 3vw, 1.2rem);
+      margin-bottom: 1.25rem;
+    }
+
+    .hero .tagline {
+      color: var(--text-muted);
+      max-width: 36rem;
+      margin-bottom: 2rem;
+    }
+
+    .hero-links {
+      display: flex;
+      gap: 1.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
+    }
+
+    /* ============================================================
+       Projects
+       ============================================================ */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .project-card {
+      background: var(--bg-alt);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .project-card h3 {
+      font-size: 1rem;
+      word-break: break-word;
+    }
+
+    .project-card p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      flex-grow: 1; /* pushes the footer row to the bottom */
+    }
+
+    .project-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+    }
+
+    .language-badge {
+      color: var(--accent);
+    }
+
+    .language-badge::before {
+      content: "● ";
+      font-size: 0.65rem;
+    }
+
+    .projects-status {
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+    }
+
+    /* ============================================================
+       Skills
+       ============================================================ */
+    .skills-group {
+      margin-bottom: 1.75rem;
+    }
+
+    .skills-group h3 {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+    }
+
+    .skills-list {
+      list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+    }
+
+    .skills-list li {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      background: var(--bg-alt);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.3rem 0.7rem;
+    }
+
+    /* ============================================================
+       About
+       ============================================================ */
+    .about p {
+      max-width: 42rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .about .es {
+      color: var(--text-muted);
+    }
+
+    /* ============================================================
+       Contact + footer
+       ============================================================ */
+    .contact a {
+      font-family: var(--font-mono);
+      font-size: 1.05rem;
+    }
+
+    footer {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      padding: 2rem 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ============================================================
+       Mobile adjustments
+       ============================================================ */
+    @media (max-width: 600px) {
+      section {
+        padding: 3rem 1.25rem;
+      }
+
+      .hero {
+        min-height: 70vh;
+      }
+
+      .hero-links {
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- ============================================================
+       1. Hero
+       ============================================================ -->
+  <section class="hero fade-in">
+    <h1>Jorge Burgos</h1>
+    <p class="title">Computer Engineering Student @ UPRM</p>
+    <p class="tagline">
+      Building backend systems and exploring AI. Graduating May 2027.
+    </p>
+    <div class="hero-links">
+      <a href="https://github.com/jorge-burgos10" target="_blank" rel="noopener noreferrer">github →</a>
+      <a href="https://www.linkedin.com/in/jorge-burgos-b5a8748a/" target="_blank" rel="noopener noreferrer">linkedin →</a>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       2. Projects (populated from the GitHub API)
+       ============================================================ -->
+  <section id="projects" class="fade-in">
+    <h2 class="section-title">projects</h2>
+    <p class="projects-status" id="projects-status">Loading repositories…</p>
+    <div class="projects-grid" id="projects-grid"></div>
+  </section>
+
+  <!-- ============================================================
+       3. Skills
+       ============================================================ -->
+  <section id="skills" class="fade-in">
+    <h2 class="section-title">skills</h2>
+
+    <div class="skills-group">
+      <h3>Languages</h3>
+      <ul class="skills-list">
+        <li>Python</li>
+        <li>Java</li>
+        <li>SQL</li>
+        <li>JavaScript</li>
+      </ul>
+    </div>
+
+    <div class="skills-group">
+      <h3>Frameworks</h3>
+      <ul class="skills-list">
+        <li>FastAPI</li>
+        <li>React</li>
+        <li>Streamlit</li>
+      </ul>
+    </div>
+
+    <div class="skills-group">
+      <h3>Tools</h3>
+      <ul class="skills-list">
+        <li>PostgreSQL</li>
+        <li>PostGIS</li>
+        <li>Git</li>
+        <li>Docker</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       4. About (bilingual: English / Spanish)
+       ============================================================ -->
+  <section id="about" class="about fade-in">
+    <h2 class="section-title">about</h2>
+    <p>
+      I'm a Computer Engineering student at the University of Puerto Rico,
+      Mayagüez, graduating in May 2027. I'm interested in artificial
+      intelligence, backend development, and systems — I enjoy building
+      software that is reliable, well-structured, and solves real problems.
+    </p>
+    <p class="es" lang="es">
+      Soy estudiante de Ingeniería en Computadoras en la Universidad de
+      Puerto Rico, Mayagüez, y me graduaré en mayo de 2027. Me interesan la
+      inteligencia artificial, el desarrollo backend y los sistemas — disfruto
+      construir software confiable y bien estructurado que resuelva problemas
+      reales.
+    </p>
+  </section>
+
+  <!-- ============================================================
+       5. Contact
+       ============================================================ -->
+  <section id="contact" class="contact fade-in">
+    <h2 class="section-title">contact</h2>
+    <a href="mailto:jorgeburgos859@gmail.com">jorgeburgos859@gmail.com</a>
+  </section>
+
+  <footer>
+    © 2026 Jorge Burgos · Hosted on GitHub Pages
+  </footer>
+
+  <script>
+    /* ============================================================
+       GitHub projects
+       ------------------------------------------------------------
+       Fetches public repos, filters out forks and repos without a
+       description, and renders them as cards in the Projects grid.
+       ============================================================ */
+
+    const GITHUB_USERNAME = "jorge-burgos10";
+
+    const API_URL =
+      `https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated&per_page=20`;
+
+    async function loadProjects() {
+      const grid = document.getElementById("projects-grid");
+      const status = document.getElementById("projects-status");
+
+      try {
+        const response = await fetch(API_URL);
+        if (!response.ok) {
+          throw new Error(`GitHub API responded with ${response.status}`);
+        }
+
+        const repos = await response.json();
+
+        // Keep only original repos that have a description
+        const projects = repos.filter(
+          (repo) => !repo.fork && repo.description
+        );
+
+        if (projects.length === 0) {
+          status.textContent = "No projects to show yet.";
+          return;
+        }
+
+        status.remove();
+        projects.forEach((repo) => grid.appendChild(buildCard(repo)));
+      } catch (error) {
+        status.textContent =
+          "Could not load projects from GitHub. Visit my profile instead.";
+        console.error("Failed to load GitHub repos:", error);
+      }
+    }
+
+    // Builds a single project card using DOM APIs (avoids innerHTML
+    // so repo names/descriptions are always treated as plain text).
+    function buildCard(repo) {
+      const card = document.createElement("article");
+      card.className = "project-card";
+
+      const name = document.createElement("h3");
+      name.textContent = repo.name;
+
+      const description = document.createElement("p");
+      description.textContent = repo.description;
+
+      const meta = document.createElement("div");
+      meta.className = "project-meta";
+
+      if (repo.language) {
+        const badge = document.createElement("span");
+        badge.className = "language-badge";
+        badge.textContent = repo.language;
+        meta.appendChild(badge);
+      }
+
+      const link = document.createElement("a");
+      link.href = repo.html_url;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.textContent = "view repo →";
+      meta.appendChild(link);
+
+      card.append(name, description, meta);
+      return card;
+    }
+
+    loadProjects();
+
+    /* ============================================================
+       Subtle fade-in on scroll
+       ------------------------------------------------------------
+       Sections start slightly translated/transparent and become
+       visible once they enter the viewport.
+       ============================================================ */
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+            observer.unobserve(entry.target); // animate only once
+          }
+        });
+      },
+      { threshold: 0.15 }
+    );
+
+    document.querySelectorAll(".fade-in").forEach((el) => observer.observe(el));
+  </script>
+</body>
+</html>
