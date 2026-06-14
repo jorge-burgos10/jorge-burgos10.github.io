@@ -337,6 +337,11 @@
       font-size: 0.6rem;
     }
 
+    .project-links {
+      display: flex;
+      gap: 1rem;
+    }
+
     /* ============================================================
        Skills
        ============================================================ */
@@ -592,6 +597,19 @@
        ============================================================ */
     const PROJECTS = [
       {
+        name: "Car Tracking System — REST API & ETL Pipeline",
+        description:
+          "Full-stack geospatial fleet platform: a 28-endpoint FastAPI REST " +
+          "API (Handler/DAO, no ORM), an ETL pipeline ingesting Parquet data " +
+          "into PostgreSQL + PostGIS, a Streamlit web app with live Folium " +
+          "maps and Plotly charts, and an in-app AI Assistant. Deployed on Render.",
+        language: "Python",
+        tags: ["FastAPI", "PostgreSQL", "PostGIS", "Streamlit", "Docker", "AI"],
+        status: "Featured",
+        url: "https://github.com/DBSpring26/db-project-spring2026-cartracking-3neuronas",
+        detailUrl: "car-tracking.html",
+      },
+      {
         name: "EV Charging Station Reservation System",
         description:
           "Console-based reservation platform for personal electric vehicles " +
@@ -654,12 +672,25 @@
       badge.textContent = project.language;
       meta.appendChild(badge);
 
+      // Links group: optional case-study page + repo link.
+      const links = document.createElement("div");
+      links.className = "project-links";
+
+      if (project.detailUrl) {
+        const detail = document.createElement("a");
+        detail.href = project.detailUrl;
+        detail.textContent = "case study →";
+        links.appendChild(detail);
+      }
+
       const link = document.createElement("a");
       link.href = project.url;
       link.target = "_blank";
       link.rel = "noopener noreferrer";
-      link.textContent = "view repo →";
-      meta.appendChild(link);
+      link.textContent = "repo →";
+      links.appendChild(link);
+
+      meta.appendChild(links);
 
       card.append(head, description, tags, meta);
       return card;

@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Car Tracking System — a full-stack geospatial fleet platform built with FastAPI, PostgreSQL/PostGIS, Streamlit, and an AI Assistant. Case study by Jorge Burgos." />
+  <title>Car Tracking System — Case Study · Jorge Burgos</title>
+
+  <!-- Google Fonts: JetBrains Mono for headings/code, Inter for body text -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    /* ============================================================
+       Design tokens (shared with the main portfolio page)
+       ============================================================ */
+    :root {
+      --bg: #0d1117;
+      --bg-card: #151b23;
+      --bg-chip: #1c242e;
+      --text: #e2e8f0;
+      --text-muted: #94a3b3;
+      --accent: #56b6c2;
+      --accent-dim: rgba(86, 182, 194, 0.12);
+      --border: #232b36;
+      --font-mono: "JetBrains Mono", monospace;
+      --font-body: "Inter", system-ui, sans-serif;
+    }
+
+    /* ============================================================
+       Base
+       ============================================================ */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 0.975rem;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    h1, h2, h3 {
+      font-family: var(--font-mono);
+      line-height: 1.25;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    a:hover,
+    a:focus-visible {
+      text-decoration: underline;
+    }
+
+    .wrap {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    section {
+      padding: 3rem 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .section-title {
+      font-size: 1.2rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: baseline;
+      gap: 0.6rem;
+    }
+
+    .section-title .num {
+      color: var(--accent);
+      font-size: 0.85rem;
+      font-weight: 400;
+    }
+
+    /* Subtle fade-in on scroll (only animation on the page) */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .fade-in.visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+      .fade-in {
+        opacity: 1;
+        transform: none;
+        transition: none;
+      }
+    }
+
+    /* ============================================================
+       Top navigation
+       ============================================================ */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(13, 17, 23, 0.92);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-inner {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 0.8rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+    }
+
+    .nav-back {
+      color: var(--text-muted);
+    }
+
+    .nav-back:hover,
+    .nav-back:focus-visible {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .nav-name {
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    .nav-name .accent {
+      color: var(--accent);
+    }
+
+    /* ============================================================
+       Hero
+       ============================================================ */
+    .hero {
+      padding: 4rem 0 3rem;
+    }
+
+    .hero-kicker {
+      font-family: var(--font-mono);
+      color: var(--accent);
+      font-size: 0.85rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .hero h1 {
+      font-size: clamp(1.8rem, 5vw, 2.6rem);
+      margin-bottom: 0.6rem;
+      letter-spacing: -0.02em;
+    }
+
+    .hero .subtitle {
+      color: var(--text-muted);
+      max-width: 44rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-facts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem 1.75rem;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 1.75rem;
+    }
+
+    .hero-facts span::before {
+      content: "▸ ";
+      color: var(--accent);
+    }
+
+    .hero-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.9rem;
+    }
+
+    .btn {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      padding: 0.55rem 1.1rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      transition: border-color 0.2s ease, background 0.2s ease;
+    }
+
+    .btn:hover,
+    .btn:focus-visible {
+      text-decoration: none;
+      border-color: var(--accent);
+      background: var(--accent-dim);
+    }
+
+    .btn-primary {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* ============================================================
+       Prose + lists
+       ============================================================ */
+    .prose p {
+      color: var(--text-muted);
+      max-width: 46rem;
+      margin-bottom: 1rem;
+    }
+
+    .prose strong {
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .feature-list {
+      list-style: none;
+      max-width: 46rem;
+    }
+
+    .feature-list li {
+      color: var(--text-muted);
+      padding-left: 1.4rem;
+      position: relative;
+      margin-bottom: 0.6rem;
+    }
+
+    .feature-list li::before {
+      content: "▸";
+      color: var(--accent);
+      position: absolute;
+      left: 0;
+    }
+
+    .feature-list strong {
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    /* ============================================================
+       Tech stack chips
+       ============================================================ */
+    .stack-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.1rem;
+    }
+
+    .stack-group {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.2rem 1.4rem;
+    }
+
+    .stack-group h3 {
+      font-size: 0.8rem;
+      color: var(--accent);
+      font-weight: 500;
+      margin-bottom: 0.8rem;
+    }
+
+    .stack-group h3::before {
+      content: "$ ";
+      color: var(--text-muted);
+    }
+
+    .chip-list {
+      list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+    }
+
+    .chip-list li {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      background: var(--bg-chip);
+      border-radius: 4px;
+      padding: 0.25rem 0.6rem;
+    }
+
+    /* ============================================================
+       Walkthrough — screenshots + captions
+       ============================================================ */
+    .shot {
+      margin-bottom: 2.5rem;
+    }
+
+    .shot:last-child {
+      margin-bottom: 0;
+    }
+
+    .shot h3 {
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .shot h3 .step {
+      color: var(--accent);
+      margin-right: 0.4rem;
+    }
+
+    .shot p {
+      color: var(--text-muted);
+      max-width: 46rem;
+      margin-bottom: 1rem;
+      font-size: 0.92rem;
+    }
+
+    /* Figure holds the screenshot; a placeholder shows until the
+       real image is dropped into images/car-tracking/. */
+    .figure {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--bg-card);
+    }
+
+    .figure img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    /* Placeholder shown when the screenshot is missing/not loaded */
+    .figure.placeholder {
+      aspect-ratio: 16 / 9;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      text-align: center;
+      padding: 1rem;
+      background:
+        repeating-linear-gradient(
+          45deg,
+          var(--bg-card),
+          var(--bg-card) 12px,
+          var(--bg-chip) 12px,
+          var(--bg-chip) 24px
+        );
+    }
+
+    .figure.placeholder .ph-label {
+      color: var(--accent);
+    }
+
+    .figure.placeholder img {
+      display: none;
+    }
+
+    /* ============================================================
+       Footer
+       ============================================================ */
+    footer {
+      text-align: center;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      padding: 1.75rem 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ============================================================
+       Mobile
+       ============================================================ */
+    @media (max-width: 640px) {
+      section {
+        padding: 2.25rem 0;
+      }
+      .hero {
+        padding: 3rem 0 2.25rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- ============================================================
+       Top navigation — back to the portfolio
+       ============================================================ -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-name">jorge<span class="accent">@</span>uprm<span class="accent">:~$</span></a>
+      <a href="index.html#projects" class="nav-back">← back to projects</a>
+    </div>
+  </nav>
+
+  <main class="wrap">
+    <!-- ============================================================
+         Hero
+         ============================================================ -->
+    <section class="hero fade-in">
+      <p class="hero-kicker">Case study</p>
+      <h1>Car Tracking System</h1>
+      <p class="subtitle">
+        A full-stack geospatial fleet platform that tracks vehicles, trips, GPS
+        pings, road segments, and parking zones — combining a FastAPI REST API,
+        an ETL pipeline into PostgreSQL/PostGIS, a Streamlit web app with live
+        maps and charts, and an in-app AI Assistant.
+      </p>
+      <div class="hero-facts">
+        <span>ICOM 5016 — Database Systems</span>
+        <span>Team: 3 Neuronas</span>
+        <span>My role: Pages Layer (frontend)</span>
+        <span>Spring 2026</span>
+      </div>
+      <div class="hero-links">
+        <a class="btn btn-primary" href="https://github.com/DBSpring26/db-project-spring2026-cartracking-3neuronas" target="_blank" rel="noopener noreferrer">Repo</a>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         Overview
+         ============================================================ -->
+    <section class="prose fade-in">
+      <h2 class="section-title"><span class="num">01</span> overview</h2>
+      <p>
+        The Car Tracking System is a production-style backend for managing a
+        vehicle fleet. A <strong>28-endpoint RESTful API</strong> built with
+        FastAPI exposes CRUD operations and geospatial queries over vehicles,
+        location pings, trips, road segments, and parking areas. It follows a
+        strict <strong>Handler/DAO architecture with no ORM</strong>, talking to
+        PostgreSQL 17 + PostGIS directly through psycopg2.
+      </p>
+      <p>
+        An <strong>ETL pipeline</strong> ingests Parquet datasets into the
+        database, handling geometry conversions (GeoJSON / SRID 4326). On top of
+        the API sits a <strong>Streamlit web application</strong> with interactive
+        Folium maps, Plotly charts, and an <strong>AI Assistant</strong> that
+        answers natural-language questions about the fleet using live API data.
+        Everything is containerized with Docker and deployed on Render.
+      </p>
+    </section>
+
+    <!-- ============================================================
+         Tech stack
+         ============================================================ -->
+    <section class="fade-in">
+      <h2 class="section-title"><span class="num">02</span> tech stack</h2>
+      <div class="stack-grid">
+        <div class="stack-group">
+          <h3>backend &amp; data</h3>
+          <ul class="chip-list">
+            <li>FastAPI</li>
+            <li>PostgreSQL 17</li>
+            <li>PostGIS</li>
+            <li>psycopg2</li>
+            <li>Handler/DAO</li>
+          </ul>
+        </div>
+        <div class="stack-group">
+          <h3>web app</h3>
+          <ul class="chip-list">
+            <li>Streamlit</li>
+            <li>Folium</li>
+            <li>Plotly</li>
+            <li>pandas</li>
+            <li>requests</li>
+          </ul>
+        </div>
+        <div class="stack-group">
+          <h3>etl</h3>
+          <ul class="chip-list">
+            <li>Python</li>
+            <li>pandas</li>
+            <li>pyarrow</li>
+            <li>Parquet</li>
+          </ul>
+        </div>
+        <div class="stack-group">
+          <h3>ai assistant</h3>
+          <ul class="chip-list">
+            <li>Cursor SDK</li>
+            <li>MCP</li>
+            <li>composer-2.5</li>
+          </ul>
+        </div>
+        <div class="stack-group">
+          <h3>devops</h3>
+          <ul class="chip-list">
+            <li>Docker</li>
+            <li>Docker Compose</li>
+            <li>Render</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         Walkthrough — how it works (screenshots)
+         ------------------------------------------------------------
+         Drop screenshots into images/car-tracking/ using the file
+         names referenced below. Until then, a striped placeholder
+         with the expected filename is shown automatically.
+         ============================================================ -->
+    <section class="fade-in">
+      <h2 class="section-title"><span class="num">03</span> how it works</h2>
+
+      <div class="shot">
+        <h3><span class="step">01.</span>The interface</h3>
+        <p>
+          After logging in, users land on the home dashboard: a sidebar to
+          navigate between sections, live counts of vehicles, parking areas, road
+          segments, and active pings, plus quick-access cards into each view.
+        </p>
+        <figure class="figure">
+          <img src="images/car-tracking/interface.png" alt="Car Tracking System home dashboard with sidebar navigation and live fleet counts" loading="lazy" />
+        </figure>
+      </div>
+
+      <div class="shot">
+        <h3><span class="step">02.</span>Live fleet map</h3>
+        <p>
+          The Vehicle Pings view renders every vehicle's latest GPS ping on an
+          interactive Folium map, served as GeoJSON from the API. Users can pan,
+          zoom, and filter the fleet across the Mayagüez area.
+        </p>
+        <figure class="figure">
+          <img src="images/car-tracking/map.png" alt="Live fleet map with vehicle markers across Mayaguez" loading="lazy" />
+        </figure>
+      </div>
+
+      <div class="shot">
+        <h3><span class="step">03.</span>Breadcrumb route</h3>
+        <p>
+          Selecting a vehicle and a time range reconstructs its breadcrumb route —
+          the path built from its location pings, drawn as a PostGIS LineString
+          with start/end markers and the matching trip IDs.
+        </p>
+        <figure class="figure">
+          <img src="images/car-tracking/breadcrumb.png" alt="Breadcrumb view showing a vehicle's route over a selected time range" loading="lazy" />
+        </figure>
+      </div>
+
+      <div class="shot">
+        <h3><span class="step">04.</span>Road segments</h3>
+        <p>
+          Over 4,000 road segments are displayed on the map, color-coded by speed
+          limit, and listed in a paginated data table fed by the
+          <code>/road-segments</code> endpoints (with GeoJSON for map display).
+        </p>
+        <figure class="figure">
+          <img src="images/car-tracking/road-segments.png" alt="Road segments map color-coded by speed limit, with a data table" loading="lazy" />
+        </figure>
+      </div>
+
+      <div class="shot">
+        <h3><span class="step">05.</span>CRUD management</h3>
+        <p>
+          Each entity has full create / update / delete forms wired to the REST
+          API — here, adding a new road segment from coordinates, or editing and
+          deleting an existing one, with validation throughout.
+        </p>
+        <figure class="figure">
+          <img src="images/car-tracking/management.png" alt="Forms to add, update, and delete a road segment" loading="lazy" />
+        </figure>
+      </div>
+
+      <div class="shot">
+        <h3><span class="step">06.</span>Statistics &amp; charts</h3>
+        <p>
+          The dashboard visualizes fleet activity — such as location pings per day
+          over a selected range — using Plotly charts backed by aggregate queries
+          from the <code>/stats</code> endpoints.
+        </p>
+        <figure class="figure">
+          <img src="images/car-tracking/stats.png" alt="Dashboard with a Plotly bar chart of location pings per day" loading="lazy" />
+        </figure>
+      </div>
+
+      <div class="shot">
+        <h3><span class="step">07.</span>AI Assistant</h3>
+        <p>
+          An in-app chat answers natural-language questions about the fleet
+          (vehicles, trips, pings, parking, statistics). It uses the Cursor SDK
+          with an MCP server exposing the REST API as tools, keeps conversation
+          context, and refuses out-of-scope questions.
+        </p>
+        <figure class="figure">
+          <img src="images/car-tracking/ai-assistant.png" alt="AI Assistant chat answering fleet questions with live API data" loading="lazy" />
+        </figure>
+      </div>
+
+      <div class="shot">
+        <h3><span class="step">08.</span>Interactive API docs</h3>
+        <p>
+          The FastAPI backend auto-generates Swagger/OpenAPI documentation at
+          <code>/docs</code>, where all 28 endpoints can be explored and tested
+          interactively.
+        </p>
+        <figure class="figure">
+          <img src="images/car-tracking/swagger.png" alt="Swagger UI listing the Car Tracking API endpoints" loading="lazy" />
+        </figure>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         My role
+         ============================================================ -->
+    <section class="fade-in">
+      <h2 class="section-title"><span class="num">04</span> my role</h2>
+      <ul class="feature-list">
+        <li>
+          <strong>Pages Layer (frontend).</strong> I built the Streamlit
+          <code>pages/</code> — the views that consume the REST API: the map
+          dashboard, entity management forms, statistics, and the AI Assistant page.
+        </li>
+        <li>
+          <strong>API integration.</strong> Wired the UI to the FastAPI endpoints
+          (auth, CRUD, geospatial and stats queries) with a shared HTTP client and
+          consistent error handling.
+        </li>
+        <li>
+          <strong>Geospatial visualization.</strong> Rendered GeoJSON from the API
+          (points, line strings, polygons) on Folium maps for vehicles, routes,
+          road segments, and parking areas.
+        </li>
+        <li>
+          <strong>AI Assistant.</strong> Built the in-app chat page that answers
+          natural-language questions about the fleet using live API data —
+          integrating the Cursor SDK with an MCP server that exposes the REST
+          endpoints as tools, managing conversation context, and scoping answers
+          to project topics only.
+        </li>
+      </ul>
+    </section>
+  </main>
+
+  <footer>
+    © 2026 Jorge Burgos · <a href="index.html">back to portfolio</a>
+  </footer>
+
+  <script>
+    /* ============================================================
+       Screenshot placeholders
+       ------------------------------------------------------------
+       If a screenshot hasn't been added yet (image fails to load),
+       turn its figure into a labeled striped placeholder showing the
+       expected file path, so the layout never looks broken.
+       ============================================================ */
+    document.querySelectorAll(".figure img").forEach((img) => {
+      img.addEventListener("error", () => {
+        const figure = img.closest(".figure");
+        if (!figure || figure.classList.contains("placeholder")) return;
+        figure.classList.add("placeholder");
+
+        const label = document.createElement("span");
+        label.className = "ph-label";
+        label.textContent = "screenshot pending";
+
+        const path = document.createElement("span");
+        path.textContent = img.getAttribute("src");
+
+        figure.append(label, path);
+      });
+    });
+
+    /* ============================================================
+       Subtle fade-in on scroll
+       ============================================================ */
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.12 }
+    );
+
+    document.querySelectorAll(".fade-in").forEach((el) => observer.observe(el));
+  </script>
+</body>
+</html>
