@@ -726,19 +726,32 @@
     /* ============================================================
        Subtle fade-in on scroll
        ============================================================ */
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("visible");
-            observer.unobserve(entry.target); // animate only once
-          }
-        });
-      },
-      { threshold: 0.15 }
-    );
+    const fadeEls = document.querySelectorAll(".fade-in");
+    const reveal = (el) => el.classList.add("visible");
 
-    document.querySelectorAll(".fade-in").forEach((el) => observer.observe(el));
+    if ("IntersectionObserver" in window) {
+      const observer = new IntersectionObserver(
+        (entries, obs) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              reveal(entry.target);
+              obs.unobserve(entry.target); // animate only once
+            }
+          });
+        },
+        // threshold 0 reveals a section as soon as its edge enters the viewport,
+        // which also works for sections taller than the screen.
+        { threshold: 0, rootMargin: "0px 0px -10% 0px" }
+      );
+      fadeEls.forEach((el) => observer.observe(el));
+    } else {
+      fadeEls.forEach(reveal);
+    }
+
+    // Safety net for the back/forward cache so no section stays hidden.
+    window.addEventListener("pageshow", (event) => {
+      if (event.persisted) fadeEls.forEach(reveal);
+    });
   </script>
 </body>
 </html>

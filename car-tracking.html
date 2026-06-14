@@ -700,19 +700,36 @@
     /* ============================================================
        Subtle fade-in on scroll
        ============================================================ */
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("visible");
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.12 }
-    );
+    const fadeEls = document.querySelectorAll(".fade-in");
+    const reveal = (el) => el.classList.add("visible");
 
-    document.querySelectorAll(".fade-in").forEach((el) => observer.observe(el));
+    if ("IntersectionObserver" in window) {
+      const observer = new IntersectionObserver(
+        (entries, obs) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              reveal(entry.target);
+              obs.unobserve(entry.target);
+            }
+          });
+        },
+        // threshold 0 + a small bottom margin so sections taller than the
+        // viewport (like the screenshot-heavy walkthrough) still reveal as soon
+        // as their top scrolls into view — a percentage threshold can be
+        // impossible to satisfy when the element is taller than the screen.
+        { threshold: 0, rootMargin: "0px 0px -10% 0px" }
+      );
+      fadeEls.forEach((el) => observer.observe(el));
+    } else {
+      fadeEls.forEach(reveal);
+    }
+
+    // Safety net: when the page is restored from the back/forward cache
+    // (leaving and returning), force everything visible so no section can get
+    // stuck hidden.
+    window.addEventListener("pageshow", (event) => {
+      if (event.persisted) fadeEls.forEach(reveal);
+    });
   </script>
 </body>
 </html>
