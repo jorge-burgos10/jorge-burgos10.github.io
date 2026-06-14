@@ -337,22 +337,30 @@
     }
 
     /* Figure holds the screenshot; a placeholder shows until the
-       real image is dropped into images/car-tracking/. */
+       real image is dropped into images/car-tracking/.
+       The figure shrinks to the image's rendered size and centers it,
+       so screenshots are never upscaled past their native resolution
+       (which keeps them as sharp as the source allows). */
     .figure {
       border: 1px solid var(--border);
       border-radius: 8px;
       overflow: hidden;
       background: var(--bg-card);
+      width: fit-content;
+      max-width: 100%;
+      margin: 0 auto;
     }
 
     .figure img {
       display: block;
-      width: 100%;
+      width: auto;
+      max-width: 100%;
       height: auto;
     }
 
     /* Placeholder shown when the screenshot is missing/not loaded */
     .figure.placeholder {
+      width: 100%;
       aspect-ratio: 16 / 9;
       display: flex;
       flex-direction: column;
