@@ -1,0 +1,8 @@
+# Treat these as binary so Git never applies line-ending conversion
+# (which would corrupt the files).
+*.pdf binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
