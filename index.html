@@ -99,7 +99,7 @@
       font-weight: 400;
     }
 
-    /* Subtle fade-in on scroll (the only animation on the page) */
+    /* Subtle fade-in on scroll */
     .fade-in {
       opacity: 0;
       transform: translateY(10px);
@@ -111,6 +111,42 @@
       transform: none;
     }
 
+    /* Typewriter cursor + pending state */
+    .typewriter-cursor {
+      display: inline-block;
+      width: 0.12em;
+      height: 1.05em;
+      background: var(--accent);
+      margin-left: 1px;
+      vertical-align: text-bottom;
+      animation: cursor-blink 0.85s step-end infinite;
+    }
+
+    @keyframes cursor-blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    [data-typewriter].typewriter-pending {
+      opacity: 0;
+    }
+
+    [data-typewriter].typewriter-active,
+    [data-typewriter].typewriter-done {
+      opacity: 1;
+    }
+
+    .hero-links.typewriter-wait {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .hero-links.typewriter-wait.typewriter-revealed {
+      opacity: 1;
+      pointer-events: auto;
+      transition: opacity 0.45s ease;
+    }
+
     @media (prefers-reduced-motion: reduce) {
       html {
         scroll-behavior: auto;
@@ -119,6 +155,16 @@
         opacity: 1;
         transform: none;
         transition: none;
+      }
+      .typewriter-cursor {
+        animation: none;
+      }
+      [data-typewriter].typewriter-pending {
+        opacity: 1;
+      }
+      .hero-links.typewriter-wait {
+        opacity: 1;
+        pointer-events: auto;
       }
     }
 
@@ -462,7 +508,7 @@
        ============================================================ -->
   <nav class="nav">
     <div class="nav-inner">
-      <a href="#top" class="nav-name">JB<span class="accent">@</span>CpE</a>
+      <a href="#top" class="nav-name" data-typewriter="JB@CpE" data-typewriter-html>JB<span class="accent">@</span>CpE</a>
       <div class="nav-links">
         <a href="#projects">projects</a>
         <a href="#skills">skills</a>
@@ -477,11 +523,15 @@
     <!-- ============================================================
          1. Hero
          ============================================================ -->
-    <section class="hero fade-in">
-      <p class="hero-kicker">Hi, my name is</p>
-      <h1>Jorge Burgos</h1>
-      <p class="title">Computer Engineering Student @ UPRM</p>
-      <p class="tagline">
+    <section class="hero">
+      <p class="hero-kicker" data-typewriter="Hi, my name is">Hi, my name is</p>
+      <h1 data-typewriter="Jorge Burgos">Jorge Burgos</h1>
+      <p class="title" data-typewriter="Computer Engineering Student @ UPRM">Computer Engineering Student @ UPRM</p>
+      <p
+        class="tagline"
+        data-typewriter="I build backend systems — ETL pipelines, REST APIs, and geospatial database systems with Python, PostgreSQL, and PostGIS — and I'm interested in AI and LLMs, integrating them into real-world applications."
+        data-typewriter-html
+      >
         I build <strong>backend systems</strong> — ETL pipelines, REST APIs, and
         geospatial database systems with <strong>Python</strong>,
         <strong>PostgreSQL</strong>, and <strong>PostGIS</strong> — and I'm
@@ -489,11 +539,11 @@
         them into real-world applications.
       </p>
       <div class="hero-facts">
-        <span>Mayagüez, Puerto Rico</span>
-        <span>B.S. May 2027</span>
-        <span>Internships: backend · databases · cybersecurity</span>
+        <span data-typewriter="Mayagüez, Puerto Rico">Mayagüez, Puerto Rico</span>
+        <span data-typewriter="B.S. May 2027">B.S. May 2027</span>
+        <span data-typewriter="Internships: backend · databases · cybersecurity">Internships: backend · databases · cybersecurity</span>
       </div>
-      <div class="hero-links">
+      <div class="hero-links typewriter-wait">
         <a class="btn" href="https://github.com/jorge-burgos10" target="_blank" rel="noopener noreferrer">GitHub</a>
         <a class="btn" href="https://www.linkedin.com/in/jorge-burgos-b5a8748a/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
         <a class="btn" href="mailto:jorgeburgos859@gmail.com">Email</a>
@@ -504,7 +554,7 @@
          2. Projects (curated list, rendered by JS below)
          ============================================================ -->
     <section id="projects" class="fade-in">
-      <h2 class="section-title"><span class="num">01</span> projects</h2>
+      <h2 class="section-title"><span class="num">01</span> <span data-typewriter="projects">projects</span></h2>
       <div class="projects-grid" id="projects-grid"></div>
     </section>
 
@@ -512,7 +562,7 @@
          3. Skills
          ============================================================ -->
     <section id="skills" class="fade-in">
-      <h2 class="section-title"><span class="num">02</span> skills</h2>
+      <h2 class="section-title"><span class="num">02</span> <span data-typewriter="skills">skills</span></h2>
       <div class="skills-grid">
         <div class="skills-group">
           <h3>languages</h3>
@@ -562,7 +612,7 @@
          4. About (bilingual: English / Spanish)
          ============================================================ -->
     <section id="about" class="fade-in">
-      <h2 class="section-title"><span class="num">03</span> about</h2>
+      <h2 class="section-title"><span class="num">03</span> <span data-typewriter="about">about</span></h2>
       <div class="about-grid">
         <div class="about-col">
           <p class="lang-label">[ EN ]</p>
@@ -602,7 +652,7 @@
          5. Contact
          ============================================================ -->
     <section id="contact" class="contact fade-in">
-      <h2 class="section-title"><span class="num">04</span> contact</h2>
+      <h2 class="section-title"><span class="num">04</span> <span data-typewriter="contact">contact</span></h2>
       <p>
         Interested in working together, or have an internship opportunity in
         backend, databases, or systems? My inbox is open.
@@ -727,10 +777,99 @@
     PROJECTS.forEach((project) => grid.appendChild(buildCard(project)));
 
     /* ============================================================
+       Typewriter effect on load + section titles on scroll
+       ============================================================ */
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+
+    function sleep(ms) {
+      return new Promise((resolve) => setTimeout(resolve, ms));
+    }
+
+    function createCursor() {
+      const cursor = document.createElement("span");
+      cursor.className = "typewriter-cursor";
+      cursor.setAttribute("aria-hidden", "true");
+      return cursor;
+    }
+
+    function prepareTypewriter(el) {
+      if (!el.dataset.typewriter) {
+        el.dataset.typewriter = el.textContent.trim();
+      }
+      if (el.hasAttribute("data-typewriter-html")) {
+        el.dataset.savedHtml = el.innerHTML;
+      }
+      el.textContent = "";
+      el.classList.add("typewriter-pending");
+    }
+
+    async function typeInto(el, { speed = 28, pauseAfter = 0 } = {}) {
+      const text = el.dataset.typewriter;
+      const savedHtml = el.dataset.savedHtml;
+
+      el.classList.remove("typewriter-pending");
+      el.classList.add("typewriter-active");
+      const cursor = createCursor();
+      el.appendChild(cursor);
+
+      for (const char of text) {
+        cursor.before(document.createTextNode(char));
+        await sleep(speed);
+      }
+
+      cursor.remove();
+      el.classList.remove("typewriter-active");
+      el.classList.add("typewriter-done");
+      if (savedHtml) el.innerHTML = savedHtml;
+      if (pauseAfter) await sleep(pauseAfter);
+    }
+
+    async function typeSequence(elements, options = {}) {
+      for (const el of elements) {
+        await typeInto(el, options);
+      }
+    }
+
+    async function runHeroTypewriter() {
+      const heroLines = [
+        document.querySelector(".nav-name[data-typewriter]"),
+        ...document.querySelectorAll(".hero [data-typewriter]"),
+      ].filter(Boolean);
+
+      heroLines.forEach(prepareTypewriter);
+
+      const heroLinks = document.querySelector(".hero-links");
+      await typeSequence(heroLines, { speed: 26, pauseAfter: 180 });
+
+      if (heroLinks) {
+        heroLinks.classList.remove("typewriter-wait");
+        heroLinks.classList.add("typewriter-revealed");
+      }
+    }
+
+    if (!prefersReducedMotion) {
+      document
+        .querySelectorAll(".section-title [data-typewriter]")
+        .forEach(prepareTypewriter);
+      runHeroTypewriter();
+    }
+
+    /* ============================================================
        Subtle fade-in on scroll
        ============================================================ */
     const fadeEls = document.querySelectorAll(".fade-in");
-    const reveal = (el) => el.classList.add("visible");
+    const typedTitles = new WeakSet();
+
+    const reveal = (el) => {
+      el.classList.add("visible");
+
+      const title = el.querySelector(".section-title [data-typewriter]");
+      if (!title || prefersReducedMotion || typedTitles.has(title)) return;
+      typedTitles.add(title);
+      typeInto(title, { speed: 32 });
+    };
 
     if ("IntersectionObserver" in window) {
       const observer = new IntersectionObserver(
@@ -753,7 +892,22 @@
 
     // Safety net for the back/forward cache so no section stays hidden.
     window.addEventListener("pageshow", (event) => {
-      if (event.persisted) fadeEls.forEach(reveal);
+      if (!event.persisted) return;
+      fadeEls.forEach(reveal);
+      document.querySelectorAll("[data-typewriter]").forEach((el) => {
+        if (el.dataset.savedHtml) {
+          el.innerHTML = el.dataset.savedHtml;
+        } else if (el.dataset.typewriter) {
+          el.textContent = el.dataset.typewriter;
+        }
+        el.classList.remove("typewriter-pending", "typewriter-active");
+        el.classList.add("typewriter-done");
+      });
+      const heroLinks = document.querySelector(".hero-links");
+      if (heroLinks) {
+        heroLinks.classList.remove("typewriter-wait");
+        heroLinks.classList.add("typewriter-revealed");
+      }
     });
   </script>
 </body>
