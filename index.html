@@ -99,19 +99,7 @@
       font-weight: 400;
     }
 
-    /* Subtle fade-in on scroll */
-    .fade-in {
-      opacity: 0;
-      transform: translateY(10px);
-      transition: opacity 0.5s ease, transform 0.5s ease;
-    }
-
-    .fade-in.visible {
-      opacity: 1;
-      transform: none;
-    }
-
-    /* Typewriter cursor + pending state */
+    /* Typewriter intro — only "Hi, my name is" + "Jorge Burgos" */
     .typewriter-cursor {
       display: inline-block;
       width: 0.12em;
@@ -136,25 +124,22 @@
       opacity: 1;
     }
 
-    .hero-links.typewriter-wait {
+    .intro-deferred {
       opacity: 0;
+      transform: translateY(14px);
       pointer-events: none;
     }
 
-    .hero-links.typewriter-wait.typewriter-revealed {
+    body.intro-ready .intro-deferred {
       opacity: 1;
+      transform: none;
       pointer-events: auto;
-      transition: opacity 0.45s ease;
+      transition: opacity 0.7s ease, transform 0.7s ease;
     }
 
     @media (prefers-reduced-motion: reduce) {
       html {
         scroll-behavior: auto;
-      }
-      .fade-in {
-        opacity: 1;
-        transform: none;
-        transition: none;
       }
       .typewriter-cursor {
         animation: none;
@@ -162,9 +147,11 @@
       [data-typewriter].typewriter-pending {
         opacity: 1;
       }
-      .hero-links.typewriter-wait {
+      .intro-deferred {
         opacity: 1;
+        transform: none;
         pointer-events: auto;
+        transition: none;
       }
     }
 
@@ -506,9 +493,9 @@
   <!-- ============================================================
        Top navigation
        ============================================================ -->
-  <nav class="nav">
+  <nav class="nav intro-deferred">
     <div class="nav-inner">
-      <a href="#top" class="nav-name" data-typewriter="JB@CpE" data-typewriter-html>JB<span class="accent">@</span>CpE</a>
+      <a href="#top" class="nav-name">JB<span class="accent">@</span>CpE</a>
       <div class="nav-links">
         <a href="#projects">projects</a>
         <a href="#skills">skills</a>
@@ -525,25 +512,21 @@
          ============================================================ -->
     <section class="hero">
       <p class="hero-kicker" data-typewriter="Hi, my name is">Hi, my name is</p>
-      <h1 data-typewriter="Jorge Burgos">Jorge Burgos</h1>
-      <p class="title" data-typewriter="Computer Engineering Student @ UPRM">Computer Engineering Student @ UPRM</p>
-      <p
-        class="tagline"
-        data-typewriter="I build backend systems — ETL pipelines, REST APIs, and geospatial database systems with Python, PostgreSQL, and PostGIS — and I'm interested in AI and LLMs, integrating them into real-world applications."
-        data-typewriter-html
-      >
+      <h1 data-typewriter="Jorge Burgos" data-typewriter-keep-cursor>Jorge Burgos</h1>
+      <p class="title intro-deferred">Computer Engineering Student @ UPRM</p>
+      <p class="tagline intro-deferred">
         I build <strong>backend systems</strong> — ETL pipelines, REST APIs, and
         geospatial database systems with <strong>Python</strong>,
         <strong>PostgreSQL</strong>, and <strong>PostGIS</strong> — and I'm
         interested in <strong>AI</strong> and <strong>LLMs</strong>, integrating
         them into real-world applications.
       </p>
-      <div class="hero-facts">
-        <span data-typewriter="Mayagüez, Puerto Rico">Mayagüez, Puerto Rico</span>
-        <span data-typewriter="B.S. May 2027">B.S. May 2027</span>
-        <span data-typewriter="Internships: backend · databases · cybersecurity">Internships: backend · databases · cybersecurity</span>
+      <div class="hero-facts intro-deferred">
+        <span>Mayagüez, Puerto Rico</span>
+        <span>B.S. May 2027</span>
+        <span>Internships: backend · databases · cybersecurity</span>
       </div>
-      <div class="hero-links typewriter-wait">
+      <div class="hero-links intro-deferred">
         <a class="btn" href="https://github.com/jorge-burgos10" target="_blank" rel="noopener noreferrer">GitHub</a>
         <a class="btn" href="https://www.linkedin.com/in/jorge-burgos-b5a8748a/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
         <a class="btn" href="mailto:jorgeburgos859@gmail.com">Email</a>
@@ -553,16 +536,16 @@
     <!-- ============================================================
          2. Projects (curated list, rendered by JS below)
          ============================================================ -->
-    <section id="projects" class="fade-in">
-      <h2 class="section-title"><span class="num">01</span> <span data-typewriter="projects">projects</span></h2>
+    <section id="projects" class="intro-deferred">
+      <h2 class="section-title"><span class="num">01</span> projects</h2>
       <div class="projects-grid" id="projects-grid"></div>
     </section>
 
     <!-- ============================================================
          3. Skills
          ============================================================ -->
-    <section id="skills" class="fade-in">
-      <h2 class="section-title"><span class="num">02</span> <span data-typewriter="skills">skills</span></h2>
+    <section id="skills" class="intro-deferred">
+      <h2 class="section-title"><span class="num">02</span> skills</h2>
       <div class="skills-grid">
         <div class="skills-group">
           <h3>languages</h3>
@@ -611,8 +594,8 @@
     <!-- ============================================================
          4. About (bilingual: English / Spanish)
          ============================================================ -->
-    <section id="about" class="fade-in">
-      <h2 class="section-title"><span class="num">03</span> <span data-typewriter="about">about</span></h2>
+    <section id="about" class="intro-deferred">
+      <h2 class="section-title"><span class="num">03</span> about</h2>
       <div class="about-grid">
         <div class="about-col">
           <p class="lang-label">[ EN ]</p>
@@ -651,8 +634,8 @@
     <!-- ============================================================
          5. Contact
          ============================================================ -->
-    <section id="contact" class="contact fade-in">
-      <h2 class="section-title"><span class="num">04</span> <span data-typewriter="contact">contact</span></h2>
+    <section id="contact" class="contact intro-deferred">
+      <h2 class="section-title"><span class="num">04</span> contact</h2>
       <p>
         Interested in working together, or have an internship opportunity in
         backend, databases, or systems? My inbox is open.
@@ -661,7 +644,7 @@
     </section>
   </main>
 
-  <footer>
+  <footer class="intro-deferred">
     © 2026 Jorge Burgos · Built with plain HTML/CSS/JS · Hosted on GitHub Pages
   </footer>
 
@@ -777,7 +760,7 @@
     PROJECTS.forEach((project) => grid.appendChild(buildCard(project)));
 
     /* ============================================================
-       Typewriter effect on load + section titles on scroll
+       Intro typewriter — "Hi, my name is" + "Jorge Burgos" only
        ============================================================ */
     const prefersReducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)"
@@ -798,16 +781,12 @@
       if (!el.dataset.typewriter) {
         el.dataset.typewriter = el.textContent.trim();
       }
-      if (el.hasAttribute("data-typewriter-html")) {
-        el.dataset.savedHtml = el.innerHTML;
-      }
       el.textContent = "";
       el.classList.add("typewriter-pending");
     }
 
-    async function typeInto(el, { speed = 28, pauseAfter = 0 } = {}) {
+    async function typeInto(el, { speed = 28, keepCursor = false, pauseAfter = 0 } = {}) {
       const text = el.dataset.typewriter;
-      const savedHtml = el.dataset.savedHtml;
 
       el.classList.remove("typewriter-pending");
       el.classList.add("typewriter-active");
@@ -819,95 +798,52 @@
         await sleep(speed);
       }
 
-      cursor.remove();
+      if (!keepCursor) {
+        cursor.remove();
+      }
+
       el.classList.remove("typewriter-active");
       el.classList.add("typewriter-done");
-      if (savedHtml) el.innerHTML = savedHtml;
       if (pauseAfter) await sleep(pauseAfter);
     }
 
-    async function typeSequence(elements, options = {}) {
-      for (const el of elements) {
-        await typeInto(el, options);
+    function revealPage() {
+      document.body.classList.add("intro-ready");
+    }
+
+    async function runIntroTypewriter() {
+      const kicker = document.querySelector(".hero-kicker[data-typewriter]");
+      const name = document.querySelector("h1[data-typewriter]");
+      if (!kicker || !name) {
+        revealPage();
+        return;
       }
+
+      prepareTypewriter(kicker);
+      prepareTypewriter(name);
+
+      await typeInto(kicker, { speed: 28, pauseAfter: 220 });
+      await typeInto(name, { speed: 28, keepCursor: true });
+      revealPage();
     }
 
-    async function runHeroTypewriter() {
-      const heroLines = [
-        document.querySelector(".nav-name[data-typewriter]"),
-        ...document.querySelectorAll(".hero [data-typewriter]"),
-      ].filter(Boolean);
-
-      heroLines.forEach(prepareTypewriter);
-
-      const heroLinks = document.querySelector(".hero-links");
-      await typeSequence(heroLines, { speed: 26, pauseAfter: 180 });
-
-      if (heroLinks) {
-        heroLinks.classList.remove("typewriter-wait");
-        heroLinks.classList.add("typewriter-revealed");
-      }
-    }
-
-    if (!prefersReducedMotion) {
-      document
-        .querySelectorAll(".section-title [data-typewriter]")
-        .forEach(prepareTypewriter);
-      runHeroTypewriter();
-    }
-
-    /* ============================================================
-       Subtle fade-in on scroll
-       ============================================================ */
-    const fadeEls = document.querySelectorAll(".fade-in");
-    const typedTitles = new WeakSet();
-
-    const reveal = (el) => {
-      el.classList.add("visible");
-
-      const title = el.querySelector(".section-title [data-typewriter]");
-      if (!title || prefersReducedMotion || typedTitles.has(title)) return;
-      typedTitles.add(title);
-      typeInto(title, { speed: 32 });
-    };
-
-    if ("IntersectionObserver" in window) {
-      const observer = new IntersectionObserver(
-        (entries, obs) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              reveal(entry.target);
-              obs.unobserve(entry.target); // animate only once
-            }
-          });
-        },
-        // threshold 0 reveals a section as soon as its edge enters the viewport,
-        // which also works for sections taller than the screen.
-        { threshold: 0, rootMargin: "0px 0px -10% 0px" }
-      );
-      fadeEls.forEach((el) => observer.observe(el));
+    if (prefersReducedMotion) {
+      revealPage();
     } else {
-      fadeEls.forEach(reveal);
+      runIntroTypewriter();
     }
 
-    // Safety net for the back/forward cache so no section stays hidden.
+    // Safety net for the back/forward cache.
     window.addEventListener("pageshow", (event) => {
       if (!event.persisted) return;
-      fadeEls.forEach(reveal);
+      revealPage();
       document.querySelectorAll("[data-typewriter]").forEach((el) => {
-        if (el.dataset.savedHtml) {
-          el.innerHTML = el.dataset.savedHtml;
-        } else if (el.dataset.typewriter) {
+        if (el.dataset.typewriter) {
           el.textContent = el.dataset.typewriter;
         }
         el.classList.remove("typewriter-pending", "typewriter-active");
         el.classList.add("typewriter-done");
       });
-      const heroLinks = document.querySelector(".hero-links");
-      if (heroLinks) {
-        heroLinks.classList.remove("typewriter-wait");
-        heroLinks.classList.add("typewriter-revealed");
-      }
     });
   </script>
 </body>
