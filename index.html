@@ -116,7 +116,7 @@
       font-weight: 400;
     }
 
-    /* Typewriter intro — only "Hi, my name is" + "Jorge Burgos" */
+    /* Typewriter intro — the whole hero types itself on the first visit */
     .typewriter-cursor {
       display: inline-block;
       width: 0.12em;
@@ -132,13 +132,15 @@
       50% { opacity: 0; }
     }
 
+    /* Waiting for its turn in the intro sequence */
     [data-typewriter].typewriter-pending {
       opacity: 0;
     }
 
-    [data-typewriter].typewriter-active,
-    [data-typewriter].typewriter-done {
-      opacity: 1;
+    /* Text not typed yet: kept in place but invisible, so the layout
+       never shifts while typing */
+    .typewriter-rest {
+      opacity: 0;
     }
 
     .intro-deferred {
@@ -733,20 +735,20 @@
          1. Hero
          ============================================================ -->
     <section class="hero">
-      <p class="hero-kicker" data-typewriter="Hi, my name is">Hi, my name is</p>
-      <h1 data-typewriter="Jorge Burgos" data-typewriter-keep-cursor>Jorge Burgos</h1>
-      <p class="title intro-deferred">Computer Engineering Student @ UPRM</p>
-      <p class="tagline intro-deferred">
+      <p class="hero-kicker" data-typewriter>Hi, my name is</p>
+      <h1 data-typewriter>Jorge Burgos</h1>
+      <p class="title" data-typewriter>Computer Engineering Student @ UPRM</p>
+      <p class="tagline" data-typewriter>
         I build <strong>backend systems</strong> — ETL pipelines, REST APIs, and
         geospatial database systems with <strong>Python</strong>,
         <strong>PostgreSQL</strong>, and <strong>PostGIS</strong> — and I'm
         interested in <strong>AI</strong> and <strong>LLMs</strong>, integrating
         them into real-world applications.
       </p>
-      <div class="hero-facts intro-deferred">
-        <span>Mayagüez, Puerto Rico</span>
-        <span>B.S. May 2027</span>
-        <span>Internships: backend · databases · cybersecurity</span>
+      <div class="hero-facts">
+        <span data-typewriter>Mayagüez, Puerto Rico</span>
+        <span data-typewriter>B.S. May 2027</span>
+        <span data-typewriter>Internships: backend · databases · cybersecurity</span>
       </div>
       <div class="hero-links intro-deferred">
         <a class="btn" href="https://github.com/jorge-burgos10" target="_blank" rel="noopener noreferrer">GitHub</a>
@@ -759,7 +761,7 @@
          2. Projects (curated list, rendered by JS below)
          ============================================================ -->
     <section id="projects" class="reveal">
-      <h2 class="section-title"><span class="num">01</span> projects</h2>
+      <h2 class="section-title" data-typewriter-scroll><span class="num">01</span> projects</h2>
       <div class="projects-grid" id="projects-grid"></div>
     </section>
 
@@ -767,7 +769,7 @@
          3. Skills
          ============================================================ -->
     <section id="skills" class="reveal">
-      <h2 class="section-title"><span class="num">02</span> skills</h2>
+      <h2 class="section-title" data-typewriter-scroll><span class="num">02</span> skills</h2>
       <div class="skills-grid">
         <div class="skills-group">
           <h3>languages</h3>
@@ -817,7 +819,7 @@
          4. About (bilingual: English / Spanish)
          ============================================================ -->
     <section id="about" class="reveal">
-      <h2 class="section-title"><span class="num">03</span> about</h2>
+      <h2 class="section-title" data-typewriter-scroll><span class="num">03</span> about</h2>
       <div class="about-grid">
         <div class="about-col">
           <p class="lang-label">[ EN ]</p>
@@ -857,7 +859,7 @@
          5. Contact
          ============================================================ -->
     <section id="contact" class="contact reveal">
-      <h2 class="section-title"><span class="num">04</span> contact</h2>
+      <h2 class="section-title" data-typewriter-scroll><span class="num">04</span> contact</h2>
       <p>
         Interested in working together, or have an internship opportunity in
         backend, databases, or systems? My inbox is open.
@@ -1040,11 +1042,19 @@
     PROJECTS.forEach((project) => grid.appendChild(buildCard(project)));
 
     /* ============================================================
-       Intro typewriter — "Hi, my name is" + "Jorge Burgos" only
+       Typewriter intro
+       ------------------------------------------------------------
+       On the first visit of a browser session the hero types itself
+       line by line (greeting, name, title, tagline, quick facts).
+       Nothing below the hero shows until it finishes; after that,
+       each section fades in on scroll and types its own heading.
        ============================================================ */
     const prefersReducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)"
     ).matches;
+
+    const TYPE_TICK = 16; // ms — roughly one frame
+    const typewriterParts = new Map();
 
     function sleep(ms) {
       return new Promise((resolve) => setTimeout(resolve, ms));
@@ -1057,83 +1067,100 @@
       return cursor;
     }
 
-    function prepareTypewriter(el) {
-      if (!el.dataset.typewriter) {
-        el.dataset.typewriter = el.textContent.trim();
-      }
-      el.textContent = "";
-      el.classList.add("typewriter-pending");
+    // Splits every text node of `el` into a typed part (the node itself,
+    // emptied) and an invisible "rest" span that still holds the text.
+    // Inline markup such as <strong> is left untouched.
+    function prepareTypewriter(el, { hide = true } = {}) {
+      const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+      const nodes = [];
+      while (walker.nextNode()) nodes.push(walker.currentNode);
+
+      const parts = [];
+      nodes.forEach((node) => {
+        const text = node.nodeValue.replace(/\s+/g, " ");
+        if (!text.trim()) return;
+
+        const rest = document.createElement("span");
+        rest.className = "typewriter-rest";
+        rest.textContent = text;
+        rest.typedNode = node;
+        node.nodeValue = "";
+        node.after(rest);
+        parts.push({ node, rest });
+      });
+
+      typewriterParts.set(el, parts);
+      if (hide) el.classList.add("typewriter-pending");
     }
 
-    async function typeInto(el, { speed = 28, keepCursor = false, pauseAfter = 0 } = {}) {
-      const text = el.dataset.typewriter;
-
+    // `speed` is ms per character; fast speeds type several characters per tick.
+    async function typeElement(el, { speed = 28, keepCursor = false, pauseAfter = 0 } = {}) {
+      const parts = typewriterParts.get(el) || [];
+      typewriterParts.delete(el);
       el.classList.remove("typewriter-pending");
-      el.classList.add("typewriter-active");
-      const cursor = createCursor();
-      el.appendChild(cursor);
 
-      for (const char of text) {
-        cursor.before(document.createTextNode(char));
-        await sleep(speed);
+      const cursor = createCursor();
+      const perTick = Math.max(1, Math.round(TYPE_TICK / speed));
+      const delay = Math.max(speed, TYPE_TICK);
+
+      for (const { node, rest } of parts) {
+        if (!rest.isConnected) continue; // already completed by finishTypewriters()
+        rest.before(cursor);
+
+        let remaining = rest.textContent;
+        while (remaining && rest.isConnected) {
+          node.nodeValue += remaining.slice(0, perTick);
+          remaining = remaining.slice(perTick);
+          rest.textContent = remaining;
+          await sleep(delay);
+        }
+        rest.remove();
       }
 
-      if (!keepCursor) {
+      if (keepCursor) {
+        el.appendChild(cursor);
+      } else {
         cursor.remove();
       }
-
-      el.classList.remove("typewriter-active");
-      el.classList.add("typewriter-done");
       if (pauseAfter) await sleep(pauseAfter);
     }
 
-    function revealPage() {
-      document.body.classList.add("intro-ready");
-    }
-
-    async function runIntroTypewriter() {
-      const kicker = document.querySelector(".hero-kicker[data-typewriter]");
-      const name = document.querySelector("h1[data-typewriter]");
-      if (!kicker || !name) {
-        revealPage();
-        return;
-      }
-
-      prepareTypewriter(kicker);
-      prepareTypewriter(name);
-
-      await typeInto(kicker, { speed: 28, pauseAfter: 220 });
-      await typeInto(name, { speed: 28, keepCursor: true });
-      revealPage();
-    }
-
-    // Type the intro only once per browser session; on later visits
-    // (e.g. coming back from a case study) show the page right away.
-    let introSeen = false;
-    try {
-      introSeen = sessionStorage.getItem("introSeen") === "1";
-      sessionStorage.setItem("introSeen", "1");
-    } catch (error) {
-      // Storage unavailable (private mode, etc.) — just play the intro.
-    }
-
-    if (prefersReducedMotion) {
-      revealPage();
-    } else if (introSeen) {
-      const introName = document.querySelector("h1[data-typewriter]");
-      if (introName) introName.appendChild(createCursor());
-      revealPage();
-    } else {
-      runIntroTypewriter();
+    // Completes every pending/running typewriter at once.
+    function finishTypewriters() {
+      document.querySelectorAll(".typewriter-rest").forEach((rest) => {
+        rest.typedNode.nodeValue += rest.textContent;
+        rest.remove();
+      });
+      document.querySelectorAll(".typewriter-pending").forEach((el) => {
+        el.classList.remove("typewriter-pending");
+      });
+      typewriterParts.clear();
     }
 
     /* ============================================================
        Scroll reveal + active nav link
+       (started only once the intro is done)
        ============================================================ */
     const revealEls = document.querySelectorAll(".reveal");
-    const showEl = (el) => el.classList.add("visible");
+    let scrollEffectsStarted = false;
 
-    if ("IntersectionObserver" in window) {
+    function showEl(el) {
+      el.classList.add("visible");
+      const heading = el.querySelector("[data-typewriter-scroll]");
+      if (heading && typewriterParts.has(heading)) {
+        typeElement(heading, { speed: 40 });
+      }
+    }
+
+    function startScrollEffects() {
+      if (scrollEffectsStarted) return;
+      scrollEffectsStarted = true;
+
+      if (!("IntersectionObserver" in window)) {
+        revealEls.forEach(showEl);
+        return;
+      }
+
       const revealObserver = new IntersectionObserver(
         (entries, obs) => {
           entries.forEach((entry) => {
@@ -1166,22 +1193,71 @@
         const section = document.getElementById(id);
         if (section) navObserver.observe(section);
       });
-    } else {
-      revealEls.forEach(showEl);
     }
 
-    // Safety net for the back/forward cache.
+    // Shows the hero buttons and lets the sections below start appearing.
+    function revealPage() {
+      document.body.classList.add("intro-ready");
+      startScrollEffects();
+    }
+
+    async function runIntroTypewriter() {
+      const hero = document.querySelector(".hero");
+      const steps = [
+        [hero.querySelector(".hero-kicker"), { speed: 28, pauseAfter: 220 }],
+        [hero.querySelector("h1"), { speed: 28, pauseAfter: 220 }],
+        [hero.querySelector(".title"), { speed: 16, pauseAfter: 140 }],
+        [hero.querySelector(".tagline"), { speed: 6, pauseAfter: 140 }],
+        ...[...hero.querySelectorAll(".hero-facts span")].map((fact) => [
+          fact,
+          { speed: 12, pauseAfter: 60 },
+        ]),
+      ].filter(([el]) => el);
+
+      // Prepare everything first so no text shows before its turn.
+      steps.forEach(([el]) => prepareTypewriter(el));
+      document
+        .querySelectorAll("[data-typewriter-scroll]")
+        .forEach((heading) => prepareTypewriter(heading, { hide: false }));
+
+      for (const [el, options] of steps) {
+        await typeElement(el, options);
+      }
+
+      const name = hero.querySelector("h1");
+      if (name && !name.querySelector(".typewriter-cursor")) {
+        name.appendChild(createCursor());
+      }
+      revealPage();
+    }
+
+    // Type the intro only once per browser session; on later visits
+    // (e.g. coming back from a case study) show the page right away.
+    let introSeen = false;
+    try {
+      introSeen = sessionStorage.getItem("introSeen") === "1";
+      sessionStorage.setItem("introSeen", "1");
+    } catch (error) {
+      // Storage unavailable (private mode, etc.) — just play the intro.
+    }
+
+    if (prefersReducedMotion) {
+      revealPage();
+    } else if (introSeen) {
+      const introName = document.querySelector(".hero h1");
+      if (introName) introName.appendChild(createCursor());
+      revealPage();
+    } else {
+      runIntroTypewriter();
+    }
+
+    // Safety net for the back/forward cache: never leave text half-typed
+    // or sections hidden when the page is restored.
     window.addEventListener("pageshow", (event) => {
       if (!event.persisted) return;
+      finishTypewriters();
       revealPage();
       revealEls.forEach(showEl);
-      document.querySelectorAll("[data-typewriter]").forEach((el) => {
-        if (el.dataset.typewriter) {
-          el.textContent = el.dataset.typewriter;
-        }
-        el.classList.remove("typewriter-pending", "typewriter-active");
-        el.classList.add("typewriter-done");
-      });
     });
   </script>
 </body>
