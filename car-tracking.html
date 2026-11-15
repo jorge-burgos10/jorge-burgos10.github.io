@@ -6,6 +6,17 @@
   <meta name="description" content="Car Tracking System — a full-stack geospatial fleet platform built with FastAPI, PostgreSQL/PostGIS, Streamlit, and an AI Assistant. Case study by Jorge Burgos." />
   <title>Car Tracking System — Case Study · Jorge Burgos</title>
 
+  <meta name="theme-color" content="#0d1117" />
+  <link rel="canonical" href="https://jorgeburgos.me/car-tracking.html" />
+
+  <!-- Link preview (LinkedIn, WhatsApp, Slack, X) -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://jorgeburgos.me/car-tracking.html" />
+  <meta property="og:title" content="Car Tracking System — Case Study · Jorge Burgos" />
+  <meta property="og:description" content="A full-stack geospatial fleet platform built with FastAPI, PostgreSQL/PostGIS, Streamlit, and an AI Assistant." />
+  <meta property="og:image" content="https://jorgeburgos.me/images/og.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+
   <!-- Google Fonts: JetBrains Mono for headings/code, Inter for body text -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -413,6 +424,65 @@
         padding: 3rem 0 2.25rem;
       }
     }
+
+    /* ============================================================
+       Shared polish: keyboard focus + smooth page-to-page transition
+       ============================================================ */
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
+
+    @view-transition {
+      navigation: auto;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      @view-transition {
+        navigation: none;
+      }
+    }
+
+    /* ============================================================
+       Screenshot lightbox — click a screenshot to view it large
+       ============================================================ */
+    .figure:not(.placeholder) img {
+      cursor: zoom-in;
+    }
+
+    .figure {
+      transition: border-color 0.2s ease;
+    }
+
+    .figure:not(.placeholder):hover {
+      border-color: var(--accent);
+    }
+
+    .lightbox {
+      border: none;
+      padding: 0;
+      margin: auto;
+      background: transparent;
+      max-width: 96vw;
+      max-height: 96vh;
+      overflow: visible;
+    }
+
+    .lightbox::backdrop {
+      background: rgba(5, 8, 12, 0.9);
+    }
+
+    .lightbox img {
+      display: block;
+      width: auto;
+      height: auto;
+      max-width: 96vw;
+      max-height: 94vh;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      cursor: zoom-out;
+    }
   </style>
 </head>
 
@@ -546,7 +616,7 @@
           segments, and active pings, plus quick-access cards into each view.
         </p>
         <figure class="figure">
-          <img src="images/car-tracking/interface.png" alt="Car Tracking System home dashboard with sidebar navigation and live fleet counts" loading="lazy" />
+          <img src="images/car-tracking/interface.webp" width="2736" height="1926" alt="Car Tracking System home dashboard with sidebar navigation and live fleet counts" loading="lazy" />
         </figure>
       </div>
 
@@ -558,7 +628,7 @@
           zoom, and filter the fleet across the Mayagüez area.
         </p>
         <figure class="figure">
-          <img src="images/car-tracking/map.png" alt="Live fleet map with vehicle markers across Mayaguez" loading="lazy" />
+          <img src="images/car-tracking/map.webp" width="2126" height="1308" alt="Live fleet map with vehicle markers across Mayaguez" loading="lazy" />
         </figure>
       </div>
 
@@ -570,7 +640,7 @@
           with start/end markers and the matching trip IDs.
         </p>
         <figure class="figure">
-          <img src="images/car-tracking/breadcrumb.png" alt="Breadcrumb view showing a vehicle's route over a selected time range" loading="lazy" />
+          <img src="images/car-tracking/breadcrumb.webp" width="2145" height="1991" alt="Breadcrumb view showing a vehicle's route over a selected time range" loading="lazy" />
         </figure>
       </div>
 
@@ -582,7 +652,7 @@
           <code>/road-segments</code> endpoints (with GeoJSON for map display).
         </p>
         <figure class="figure">
-          <img src="images/car-tracking/road-segments.png" alt="Road segments map color-coded by speed limit, with a data table" loading="lazy" />
+          <img src="images/car-tracking/road-segments.webp" width="2136" height="1333" alt="Road segments map color-coded by speed limit, with a data table" loading="lazy" />
         </figure>
       </div>
 
@@ -594,7 +664,7 @@
           deleting an existing one, with validation throughout.
         </p>
         <figure class="figure">
-          <img src="images/car-tracking/management.png" alt="Forms to add, update, and delete a road segment" loading="lazy" />
+          <img src="images/car-tracking/management.webp" width="2144" height="2301" alt="Forms to add, update, and delete a road segment" loading="lazy" />
         </figure>
       </div>
 
@@ -606,7 +676,7 @@
           from the <code>/stats</code> endpoints.
         </p>
         <figure class="figure">
-          <img src="images/car-tracking/stats.png" alt="Dashboard with a Plotly bar chart of location pings per day" loading="lazy" />
+          <img src="images/car-tracking/stats.webp" width="2126" height="1335" alt="Dashboard with a Plotly bar chart of location pings per day" loading="lazy" />
         </figure>
       </div>
 
@@ -619,7 +689,7 @@
           context, and refuses out-of-scope questions.
         </p>
         <figure class="figure">
-          <img src="images/car-tracking/ai-assistant.png" alt="AI Assistant chat answering fleet questions with live API data" loading="lazy" />
+          <img src="images/car-tracking/ai-assistant.webp" width="2111" height="2388" alt="AI Assistant chat answering fleet questions with live API data" loading="lazy" />
         </figure>
       </div>
 
@@ -631,7 +701,7 @@
           interactively.
         </p>
         <figure class="figure">
-          <img src="images/car-tracking/swagger.png" alt="Swagger UI listing the Car Tracking API endpoints" loading="lazy" />
+          <img src="images/car-tracking/swagger.webp" width="2736" height="2612" alt="Swagger UI listing the Car Tracking API endpoints" loading="lazy" />
         </figure>
       </div>
     </section>
@@ -730,6 +800,42 @@
     window.addEventListener("pageshow", (event) => {
       if (event.persisted) fadeEls.forEach(reveal);
     });
+
+    /* ============================================================
+       Screenshot lightbox
+       ------------------------------------------------------------
+       Click (or Enter/Space) on a screenshot opens it full size in a
+       native <dialog>; click anywhere or press Esc to close.
+       ============================================================ */
+    const lightbox = document.createElement("dialog");
+    lightbox.className = "lightbox";
+    lightbox.setAttribute("aria-label", "Screenshot viewer");
+    const lightboxImg = document.createElement("img");
+    lightbox.appendChild(lightboxImg);
+    document.body.appendChild(lightbox);
+
+    lightbox.addEventListener("click", () => lightbox.close());
+
+    if (typeof lightbox.showModal === "function") {
+      document.querySelectorAll(".figure img").forEach((img) => {
+        const open = () => {
+          if (img.closest(".figure.placeholder")) return;
+          lightboxImg.src = img.currentSrc || img.src;
+          lightboxImg.alt = img.alt;
+          lightbox.showModal();
+        };
+
+        img.tabIndex = 0;
+        img.setAttribute("role", "button");
+        img.addEventListener("click", open);
+        img.addEventListener("keydown", (event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            open();
+          }
+        });
+      });
+    }
   </script>
 </body>
 </html>

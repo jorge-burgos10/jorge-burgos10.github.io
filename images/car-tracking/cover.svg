@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500">
+  <!-- Map-style cover art for the Car Tracking project card.
+       The title is drawn by the page (HTML) so it uses the site font. -->
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0H0V40" fill="none" stroke="#141b24" stroke-width="1"/>
+    </pattern>
+  </defs>
+
+  <rect width="800" height="500" fill="#0d1117"/>
+  <rect width="800" height="500" fill="url(#grid)"/>
+
+  <!-- Coastline -->
+  <path d="M0 0H60Q28 120 70 250Q100 380 48 500H0Z" fill="#0a131d" stroke="#16222f" stroke-width="2"/>
+  <path d="M22 60q10 6 20 0M14 200q10 6 20 0M30 330q10 6 20 0M10 440q10 6 20 0" fill="none" stroke="#16222f" stroke-width="2" stroke-linecap="round"/>
+
+  <!-- City blocks -->
+  <g fill="#111822">
+    <path d="M275 190L372 172L378 268L290 296Z"/>
+    <path d="M405 165L505 148L505 235L408 266Z"/>
+    <path d="M540 262L655 240L662 345L552 378Z"/>
+    <path d="M132 205L208 196L238 318L128 340Z"/>
+    <path d="M688 105L800 82V170L692 205Z"/>
+    <path d="M300 352L405 322L410 400L312 410Z"/>
+  </g>
+
+  <!-- Minor roads -->
+  <g fill="none" stroke="#1c242e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M60 148L220 180L520 130L820 60"/>
+    <path d="M80 -20L110 360L130 520"/>
+    <path d="M380 -20L390 290L420 520"/>
+    <path d="M660 -20L670 225L700 520"/>
+    <path d="M280 430L560 400L820 330"/>
+    <path d="M72 252L245 256"/>
+    <path d="M520 250L670 225L820 235"/>
+  </g>
+
+  <!-- Major roads -->
+  <g fill="none" stroke="#283340" stroke-width="7" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M85 365L260 330L520 250L820 190"/>
+    <path d="M180 -20L220 180L260 330L300 520"/>
+    <path d="M520 -20L520 250L560 520"/>
+  </g>
+
+  <!-- Other vehicles -->
+  <g>
+    <circle cx="220" cy="180" r="12" fill="#94a3b3" opacity="0.14"/>
+    <circle cx="220" cy="180" r="5" fill="#94a3b3"/>
+    <circle cx="700" cy="362" r="12" fill="#94a3b3" opacity="0.14"/>
+    <circle cx="700" cy="362" r="5" fill="#94a3b3"/>
+    <circle cx="420" cy="415" r="12" fill="#94a3b3" opacity="0.14"/>
+    <circle cx="420" cy="415" r="5" fill="#94a3b3"/>
+    <circle cx="668" cy="180" r="12" fill="#94a3b3" opacity="0.14"/>
+    <circle cx="668" cy="180" r="5" fill="#94a3b3"/>
+  </g>
+
+  <!-- Tracked route -->
+  <path d="M110 360L260 330L520 250L520 130L670 95" fill="none" stroke="#56b6c2" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <g fill="#0d1117" stroke="#56b6c2" stroke-width="2.5">
+    <circle cx="185" cy="345" r="5"/>
+    <circle cx="260" cy="330" r="5"/>
+    <circle cx="390" cy="290" r="5"/>
+    <circle cx="520" cy="250" r="5"/>
+    <circle cx="520" cy="190" r="5"/>
+    <circle cx="520" cy="130" r="5"/>
+    <circle cx="595" cy="112.5" r="5"/>
+  </g>
+
+  <!-- Start and current position -->
+  <circle cx="110" cy="360" r="8" fill="#e2e8f0"/>
+  <circle cx="670" cy="95" r="26" fill="#56b6c2" opacity="0.12"/>
+  <circle cx="670" cy="95" r="16" fill="#56b6c2" opacity="0.22"/>
+  <circle cx="670" cy="95" r="8" fill="#56b6c2" stroke="#0d1117" stroke-width="2"/>
+</svg>

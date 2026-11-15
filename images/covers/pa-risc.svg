@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500">
+  <!-- Circuit-style cover art for the PA-RISC processor project card:
+       five pipeline stages separated by pipeline registers, with a
+       forwarding path and a write-back loop. The title is drawn by the
+       page (HTML) so it uses the site font. -->
+  <defs>
+    <pattern id="dots" width="40" height="40" patternUnits="userSpaceOnUse">
+      <circle cx="20" cy="20" r="1.5" fill="#1a222c"/>
+    </pattern>
+  </defs>
+
+  <rect width="800" height="500" fill="#0d1117"/>
+  <rect width="800" height="500" fill="url(#dots)"/>
+
+  <!-- Background traces -->
+  <g fill="none" stroke="#1c242e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M0 60H120L150 90H300"/>
+    <path d="M800 50H660L630 80H500"/>
+    <path d="M0 430H90L120 400H200"/>
+    <path d="M800 420H710L680 450H570"/>
+  </g>
+  <g fill="#1c242e">
+    <circle cx="300" cy="90" r="5"/>
+    <circle cx="500" cy="80" r="5"/>
+    <circle cx="200" cy="400" r="5"/>
+    <circle cx="570" cy="450" r="5"/>
+  </g>
+
+  <!-- Hazard / forwarding path: EX back to ID -->
+  <path d="M400 170V125H260V170" fill="none" stroke="#94a3b3" stroke-width="2" stroke-dasharray="6 6" stroke-linejoin="round" opacity="0.7"/>
+
+  <!-- Write-back loop: WB back to ID -->
+  <path d="M680 300V350H260V300" fill="none" stroke="#56b6c2" stroke-width="2.5" stroke-dasharray="7 6" stroke-linejoin="round"/>
+  <path d="M253 311L260 300L267 311" fill="none" stroke="#56b6c2" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Main data path -->
+  <path d="M30 235H770" fill="none" stroke="#56b6c2" stroke-width="5" stroke-linecap="round"/>
+  <path d="M758 225L770 235L758 245" fill="none" stroke="#56b6c2" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Five stages: IF, ID, EX, MEM, WB -->
+  <g fill="#111822" stroke="#283340" stroke-width="2">
+    <rect x="70" y="170" width="100" height="130" rx="6"/>
+    <rect x="210" y="170" width="100" height="130" rx="6"/>
+    <rect x="350" y="170" width="100" height="130" rx="6"/>
+    <rect x="490" y="170" width="100" height="130" rx="6"/>
+    <rect x="630" y="170" width="100" height="130" rx="6"/>
+  </g>
+
+  <!-- Pipeline registers between stages -->
+  <g fill="#56b6c2">
+    <rect x="186" y="155" width="8" height="160" rx="2"/>
+    <rect x="326" y="155" width="8" height="160" rx="2"/>
+    <rect x="466" y="155" width="8" height="160" rx="2"/>
+    <rect x="606" y="155" width="8" height="160" rx="2"/>
+  </g>
+
+  <!-- IF: instruction memory rows, one being fetched -->
+  <rect x="95" y="212" width="50" height="8" rx="2" fill="#283340"/>
+  <rect x="95" y="231" width="50" height="8" rx="2" fill="#56b6c2"/>
+  <rect x="95" y="250" width="50" height="8" rx="2" fill="#283340"/>
+
+  <!-- ID: decoder -->
+  <path d="M242 207L280 221V249L242 263Z" fill="none" stroke="#94a3b3" stroke-width="2.5" stroke-linejoin="round"/>
+
+  <!-- EX: ALU -->
+  <path d="M378 200L422 216V254L378 270V246L390 235L378 224Z" fill="none" stroke="#e2e8f0" stroke-width="2.5" stroke-linejoin="round"/>
+
+  <!-- MEM: memory cells -->
+  <g fill="#283340">
+    <rect x="518" y="213" width="12" height="12" rx="2"/>
+    <rect x="534" y="213" width="12" height="12" rx="2"/>
+    <rect x="550" y="213" width="12" height="12" rx="2"/>
+    <rect x="518" y="229" width="12" height="12" rx="2"/>
+    <rect x="550" y="229" width="12" height="12" rx="2"/>
+    <rect x="518" y="245" width="12" height="12" rx="2"/>
+    <rect x="534" y="245" width="12" height="12" rx="2"/>
+    <rect x="550" y="245" width="12" height="12" rx="2"/>
+  </g>
+  <rect x="534" y="229" width="12" height="12" rx="2" fill="#56b6c2"/>
+
+  <!-- WB: write-back arrow -->
+  <path d="M696 235A16 16 0 1 0 680 251" fill="none" stroke="#94a3b3" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M687 244L680 251L687 258" fill="none" stroke="#94a3b3" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
