@@ -7,6 +7,9 @@
   <title>Jorge Burgos — Computer Engineering @ UPRM</title>
 
   <meta name="theme-color" content="#0d1117" />
+  <link rel="icon" href="favicon.ico" sizes="48x48" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
   <link rel="canonical" href="https://jorgeburgos.me/" />
 
   <!-- Link preview (LinkedIn, WhatsApp, Slack, X) -->
@@ -698,6 +701,13 @@
         transform: none;
       }
     }
+
+    /* "jb." logo in the nav */
+    .nav-name img {
+      display: block;
+      height: 1.75rem;
+      width: auto;
+    }
   </style>
 </head>
 
@@ -707,7 +717,7 @@
        ============================================================ -->
   <nav class="nav">
     <div class="nav-inner">
-      <a href="#top" class="nav-name">JB<span class="accent">@</span>CpE</a>
+      <a href="#top" class="nav-name" aria-label="Jorge Burgos — home"><img src="images/logo.svg" alt="" width="28" height="28" /></a>
       <div class="nav-links">
         <a href="#projects">projects</a>
         <a href="#skills">skills</a>

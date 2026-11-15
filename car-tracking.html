@@ -7,6 +7,9 @@
   <title>Car Tracking System — Case Study · Jorge Burgos</title>
 
   <meta name="theme-color" content="#0d1117" />
+  <link rel="icon" href="favicon.ico" sizes="48x48" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
   <link rel="canonical" href="https://jorgeburgos.me/car-tracking.html" />
 
   <!-- Link preview (LinkedIn, WhatsApp, Slack, X) -->
@@ -483,6 +486,13 @@
       border-radius: 8px;
       cursor: zoom-out;
     }
+
+    /* "jb." logo in the nav */
+    .nav-name img {
+      display: block;
+      height: 1.75rem;
+      width: auto;
+    }
   </style>
 </head>
 
@@ -492,7 +502,7 @@
        ============================================================ -->
   <nav class="nav">
     <div class="nav-inner">
-      <a href="index.html" class="nav-name">JB<span class="accent">@</span>CpE</a>
+      <a href="index.html" class="nav-name" aria-label="Jorge Burgos — home"><img src="images/logo.svg" alt="" width="28" height="28" /></a>
       <a href="index.html#projects" class="nav-back">← back to projects</a>
     </div>
   </nav>
