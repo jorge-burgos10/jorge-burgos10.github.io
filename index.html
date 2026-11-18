@@ -1366,9 +1366,6 @@
 
       // Prepare everything first so no text shows before its turn.
       steps.forEach(([el]) => prepareTypewriter(el));
-      document
-        .querySelectorAll("[data-typewriter-scroll]")
-        .forEach((heading) => prepareTypewriter(heading, { hide: false }));
 
       for (const [el, options] of steps) {
         await typeElement(el, options);
@@ -1389,6 +1386,14 @@
       sessionStorage.setItem("introSeen", "1");
     } catch (error) {
       // Storage unavailable (private mode, etc.) — just play the intro.
+    }
+
+    // Section headings type themselves (with a passing cursor) each time
+    // their section scrolls into view, on every visit — not only the first.
+    if (!prefersReducedMotion) {
+      document
+        .querySelectorAll("[data-typewriter-scroll]")
+        .forEach((heading) => prepareTypewriter(heading, { hide: false }));
     }
 
     if (prefersReducedMotion) {

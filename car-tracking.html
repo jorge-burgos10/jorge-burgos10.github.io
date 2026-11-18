@@ -944,6 +944,14 @@
       // Storage unavailable (private mode, etc.) — just play the intro.
     }
 
+    // Section headings type themselves (with a passing cursor) each time
+    // their section scrolls into view, on every visit — not only the first.
+    if (!prefersReducedMotion) {
+      document
+        .querySelectorAll("[data-typewriter-scroll]")
+        .forEach((heading) => prepareTypewriter(heading, { hide: false }));
+    }
+
     if (prefersReducedMotion) {
       // Plain text, no animation.
     } else if (introSeen) {
@@ -954,9 +962,6 @@
 
       // Prepare everything before the first paint so nothing flashes.
       [kicker, title].forEach((el) => el && prepareTypewriter(el));
-      document
-        .querySelectorAll("[data-typewriter-scroll]")
-        .forEach((heading) => prepareTypewriter(heading, { hide: false }));
 
       (async () => {
         if (kicker) await typeElement(kicker, { speed: 24, pauseAfter: 120 });
