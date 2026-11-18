@@ -723,6 +723,26 @@
       <h2 class="section-title"><span class="num">04</span> my role</h2>
       <ul class="feature-list">
         <li>
+          <strong>ETL orchestration and validation.</strong> Built the pipeline
+          orchestration (<code>pipeline.py</code>) and data-validation step; fixed
+          data-quality bugs before load (a pandas Categorical dtype storing text as
+          integers, EWKB vs. WKB geometry errors, out-of-sync ID sequences).
+        </li>
+        <li>
+          <strong>Initial backend.</strong> Created the first version of the
+          FastAPI backend with its Dockerfile and docker-compose setup, fixed SQL
+          queries in several DAOs, and documented the API.
+        </li>
+        <li>
+          <strong>MCP server.</strong> Built a custom MCP server and fleet-data
+          tools so the AI Assistant can answer questions by calling the API.
+        </li>
+        <li>
+          <strong>Security hygiene.</strong> Moved credentials to environment
+          variables (<code>.env.example</code>) across the ETL, backend, web app,
+          and Docker.
+        </li>
+        <li>
           <strong>Pages Layer.</strong> I built the Streamlit
           <code>pages/</code> — the views that consume the REST API: the map
           dashboard, entity management forms, statistics, and the AI Assistant page.
