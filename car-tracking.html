@@ -571,7 +571,7 @@
          Overview
          ============================================================ -->
     <section class="prose fade-in">
-      <h2 class="section-title" data-typewriter-scroll><span class="num">01</span> overview</h2>
+      <h2 class="section-title" data-typewriter-scroll><span class="num">01</span> <span class="label">overview</span></h2>
       <p>
         The Car Tracking System is a production-style backend for managing a
         vehicle fleet. A <strong>28-endpoint RESTful API</strong> built with
@@ -594,7 +594,7 @@
          Tech stack
          ============================================================ -->
     <section class="fade-in">
-      <h2 class="section-title" data-typewriter-scroll><span class="num">02</span> tech stack</h2>
+      <h2 class="section-title" data-typewriter-scroll><span class="num">02</span> <span class="label">tech stack</span></h2>
       <div class="stack-grid">
         <div class="stack-group">
           <h3>backend &amp; data</h3>
@@ -652,7 +652,7 @@
          with the expected filename is shown automatically.
          ============================================================ -->
     <section class="fade-in">
-      <h2 class="section-title" data-typewriter-scroll><span class="num">03</span> how it works</h2>
+      <h2 class="section-title" data-typewriter-scroll><span class="num">03</span> <span class="label">how it works</span></h2>
 
       <div class="shot">
         <h3><span class="step">01.</span>The interface</h3>
@@ -756,7 +756,7 @@
          My role
          ============================================================ -->
     <section class="fade-in">
-      <h2 class="section-title" data-typewriter-scroll><span class="num">04</span> my role</h2>
+      <h2 class="section-title" data-typewriter-scroll><span class="num">04</span> <span class="label">my role</span></h2>
       <ul class="feature-list">
         <li>
           <strong>ETL orchestration and validation.</strong> Built the pipeline
@@ -977,7 +977,9 @@
       el.classList.add("visible");
       const heading = el.querySelector("[data-typewriter-scroll]");
       if (heading && typewriterParts.has(heading)) {
-        typeElement(heading, { speed: 40 });
+        // Start once the section has mostly faded in, and type slowly enough
+        // for the cursor to be seen.
+        setTimeout(() => typeElement(heading, { speed: 60 }), 350);
       }
     };
 

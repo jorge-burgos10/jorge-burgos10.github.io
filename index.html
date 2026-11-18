@@ -822,7 +822,7 @@
          2. Experience
          ============================================================ -->
     <section id="experience" class="reveal">
-      <h2 class="section-title" data-typewriter-scroll><span class="num">01</span> experience</h2>
+      <h2 class="section-title" data-typewriter-scroll><span class="num">01</span> <span class="label">experience</span></h2>
       <article class="project-card experience-card">
         <div class="project-head">
           <h3>Undergraduate Research Assistant</h3>
@@ -869,7 +869,7 @@
          3. Projects (curated list, rendered by JS below)
          ============================================================ -->
     <section id="projects" class="reveal">
-      <h2 class="section-title" data-typewriter-scroll><span class="num">02</span> projects</h2>
+      <h2 class="section-title" data-typewriter-scroll><span class="num">02</span> <span class="label">projects</span></h2>
       <div class="projects-grid" id="projects-grid"></div>
     </section>
 
@@ -877,7 +877,7 @@
          4. Skills
          ============================================================ -->
     <section id="skills" class="reveal">
-      <h2 class="section-title" data-typewriter-scroll><span class="num">03</span> skills</h2>
+      <h2 class="section-title" data-typewriter-scroll><span class="num">03</span> <span class="label">skills</span></h2>
       <div class="skills-grid">
         <div class="skills-group">
           <h3>languages</h3>
@@ -962,7 +962,7 @@
          5. About (bilingual: English / Spanish)
          ============================================================ -->
     <section id="about" class="reveal">
-      <h2 class="section-title" data-typewriter-scroll><span class="num">04</span> about</h2>
+      <h2 class="section-title" data-typewriter-scroll><span class="num">04</span> <span class="label">about</span></h2>
       <div class="lang-toggle" role="group" aria-label="About language">
         <button type="button" data-lang-btn="en" aria-pressed="true">EN</button>
         <button type="button" data-lang-btn="es" aria-pressed="false">ES</button>
@@ -1008,7 +1008,7 @@
          6. Contact
          ============================================================ -->
     <section id="contact" class="contact reveal">
-      <h2 class="section-title" data-typewriter-scroll><span class="num">05</span> contact</h2>
+      <h2 class="section-title" data-typewriter-scroll><span class="num">05</span> <span class="label">contact</span></h2>
       <p>
         Interested in working together, or have an internship opportunity in
         backend, data engineering, automation, or cloud? My inbox is open.
@@ -1297,7 +1297,9 @@
       el.classList.add("visible");
       const heading = el.querySelector("[data-typewriter-scroll]");
       if (heading && typewriterParts.has(heading)) {
-        typeElement(heading, { speed: 40 });
+        // Start once the section has mostly faded in, and type slowly enough
+        // for the cursor to be seen.
+        setTimeout(() => typeElement(heading, { speed: 60 }), 350);
       }
     }
 
