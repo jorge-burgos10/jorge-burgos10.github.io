@@ -119,6 +119,39 @@
       transform: none;
     }
 
+    /* Typewriter title — same effect as the portfolio home page.
+       The cursor is an empty inline with the bar drawn as a pseudo-element,
+       so it takes no space and never pushes text onto another line. */
+    .typewriter-cursor {
+      position: relative;
+      animation: cursor-blink 0.85s step-end infinite;
+    }
+
+    .typewriter-cursor::after {
+      content: "";
+      position: absolute;
+      left: 1px;
+      top: 0;
+      bottom: 0;
+      width: 0.12em;
+      background: var(--accent);
+    }
+
+    @keyframes cursor-blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    /* Waiting for its turn to be typed */
+    [data-typewriter].typewriter-pending {
+      opacity: 0;
+    }
+
+    /* Text not typed yet: kept in place but invisible, so nothing shifts */
+    .typewriter-rest {
+      opacity: 0;
+    }
+
     @media (prefers-reduced-motion: reduce) {
       html {
         scroll-behavior: auto;
@@ -127,6 +160,9 @@
         opacity: 1;
         transform: none;
         transition: none;
+      }
+      .typewriter-cursor {
+        animation: none;
       }
     }
 
@@ -512,8 +548,8 @@
          Hero
          ============================================================ -->
     <section class="hero fade-in">
-      <p class="hero-kicker">Case study</p>
-      <h1>Car Tracking System</h1>
+      <p class="hero-kicker" data-typewriter>Case study</p>
+      <h1 data-typewriter>Car Tracking System</h1>
       <p class="subtitle">
         A full-stack geospatial fleet platform that tracks vehicles, trips, GPS
         pings, road segments, and parking zones — combining a FastAPI REST API,
@@ -535,7 +571,7 @@
          Overview
          ============================================================ -->
     <section class="prose fade-in">
-      <h2 class="section-title"><span class="num">01</span> overview</h2>
+      <h2 class="section-title" data-typewriter-scroll><span class="num">01</span> overview</h2>
       <p>
         The Car Tracking System is a production-style backend for managing a
         vehicle fleet. A <strong>28-endpoint RESTful API</strong> built with
@@ -558,7 +594,7 @@
          Tech stack
          ============================================================ -->
     <section class="fade-in">
-      <h2 class="section-title"><span class="num">02</span> tech stack</h2>
+      <h2 class="section-title" data-typewriter-scroll><span class="num">02</span> tech stack</h2>
       <div class="stack-grid">
         <div class="stack-group">
           <h3>backend &amp; data</h3>
@@ -616,7 +652,7 @@
          with the expected filename is shown automatically.
          ============================================================ -->
     <section class="fade-in">
-      <h2 class="section-title"><span class="num">03</span> how it works</h2>
+      <h2 class="section-title" data-typewriter-scroll><span class="num">03</span> how it works</h2>
 
       <div class="shot">
         <h3><span class="step">01.</span>The interface</h3>
@@ -720,7 +756,7 @@
          My role
          ============================================================ -->
     <section class="fade-in">
-      <h2 class="section-title"><span class="num">04</span> my role</h2>
+      <h2 class="section-title" data-typewriter-scroll><span class="num">04</span> my role</h2>
       <ul class="feature-list">
         <li>
           <strong>ETL orchestration and validation.</strong> Built the pipeline
@@ -798,10 +834,147 @@
     });
 
     /* ============================================================
-       Subtle fade-in on scroll
+       Typewriter title
+       ------------------------------------------------------------
+       On the first visit of a browser session, "Case study" and the
+       project name type themselves quickly and the cursor stays on the
+       title; everything else is visible right away. Section headings
+       type as each section scrolls into view. Later visits show the
+       title already typed, with the cursor.
+       ============================================================ */
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+
+    const TYPE_TICK = 16; // ms — roughly one frame
+    const typewriterParts = new Map();
+
+    function sleep(ms) {
+      return new Promise((resolve) => setTimeout(resolve, ms));
+    }
+
+    function createCursor() {
+      const cursor = document.createElement("span");
+      cursor.className = "typewriter-cursor";
+      cursor.setAttribute("aria-hidden", "true");
+      return cursor;
+    }
+
+    // Splits every text node of `el` into a typed part (the node itself,
+    // emptied) and an invisible "rest" span that still holds the text.
+    function prepareTypewriter(el, { hide = true } = {}) {
+      const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+      const nodes = [];
+      while (walker.nextNode()) nodes.push(walker.currentNode);
+
+      const parts = [];
+      nodes.forEach((node) => {
+        const text = node.nodeValue.replace(/\s+/g, " ");
+        if (!text.trim()) return;
+
+        const rest = document.createElement("span");
+        rest.className = "typewriter-rest";
+        rest.textContent = text;
+        rest.typedNode = node;
+        node.nodeValue = "";
+        node.after(rest);
+        parts.push({ node, rest });
+      });
+
+      typewriterParts.set(el, parts);
+      if (hide) el.classList.add("typewriter-pending");
+    }
+
+    // `speed` is ms per character; fast speeds type several characters per tick.
+    async function typeElement(el, { speed = 28, keepCursor = false, pauseAfter = 0 } = {}) {
+      const parts = typewriterParts.get(el) || [];
+      typewriterParts.delete(el);
+      el.classList.remove("typewriter-pending");
+
+      const cursor = createCursor();
+      const perTick = Math.max(1, Math.round(TYPE_TICK / speed));
+      const delay = Math.max(speed, TYPE_TICK);
+
+      for (const { node, rest } of parts) {
+        if (!rest.isConnected) continue; // already completed by finishTypewriters()
+        rest.before(cursor);
+
+        let remaining = rest.textContent;
+        while (remaining && rest.isConnected) {
+          node.nodeValue += remaining.slice(0, perTick);
+          remaining = remaining.slice(perTick);
+          rest.textContent = remaining;
+          await sleep(delay);
+        }
+        rest.remove();
+      }
+
+      if (keepCursor) {
+        el.appendChild(cursor);
+      } else {
+        cursor.remove();
+      }
+      if (pauseAfter) await sleep(pauseAfter);
+    }
+
+    // Completes every pending/running typewriter at once.
+    function finishTypewriters() {
+      document.querySelectorAll(".typewriter-rest").forEach((rest) => {
+        rest.typedNode.nodeValue += rest.textContent;
+        rest.remove();
+      });
+      document.querySelectorAll(".typewriter-pending").forEach((el) => {
+        el.classList.remove("typewriter-pending");
+      });
+      typewriterParts.clear();
+    }
+
+    function ensureTitleCursor() {
+      const title = document.querySelector(".hero h1");
+      if (title && !title.querySelector(".typewriter-cursor")) {
+        title.appendChild(createCursor());
+      }
+    }
+
+    let introSeen = false;
+    try {
+      introSeen = sessionStorage.getItem("caseStudyIntroSeen") === "1";
+      sessionStorage.setItem("caseStudyIntroSeen", "1");
+    } catch (error) {
+      // Storage unavailable (private mode, etc.) — just play the intro.
+    }
+
+    if (prefersReducedMotion) {
+      // Plain text, no animation.
+    } else if (introSeen) {
+      ensureTitleCursor();
+    } else {
+      const kicker = document.querySelector(".hero .hero-kicker");
+      const title = document.querySelector(".hero h1");
+
+      // Prepare everything before the first paint so nothing flashes.
+      [kicker, title].forEach((el) => el && prepareTypewriter(el));
+      document
+        .querySelectorAll("[data-typewriter-scroll]")
+        .forEach((heading) => prepareTypewriter(heading, { hide: false }));
+
+      (async () => {
+        if (kicker) await typeElement(kicker, { speed: 24, pauseAfter: 120 });
+        if (title) await typeElement(title, { speed: 24, keepCursor: true });
+      })();
+    }
+
+    /* ============================================================
+       Subtle fade-in on scroll (+ typed section headings)
        ============================================================ */
     const fadeEls = document.querySelectorAll(".fade-in");
-    const reveal = (el) => el.classList.add("visible");
+    const reveal = (el) => {
+      el.classList.add("visible");
+      const heading = el.querySelector("[data-typewriter-scroll]");
+      if (heading && typewriterParts.has(heading)) {
+        typeElement(heading, { speed: 40 });
+      }
+    };
 
     if ("IntersectionObserver" in window) {
       const observer = new IntersectionObserver(
@@ -828,7 +1001,10 @@
     // (leaving and returning), force everything visible so no section can get
     // stuck hidden.
     window.addEventListener("pageshow", (event) => {
-      if (event.persisted) fadeEls.forEach(reveal);
+      if (!event.persisted) return;
+      finishTypewriters();
+      if (!prefersReducedMotion) ensureTitleCursor();
+      fadeEls.forEach(reveal);
     });
 
     /* ============================================================
