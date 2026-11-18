@@ -439,19 +439,42 @@
     }
 
     /* ============================================================
-       About — English / Spanish side by side on desktop
+       About — one language at a time, switched with an EN / ES toggle
        ============================================================ */
-    .about-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.75rem;
+    .lang-toggle {
+      display: inline-flex;
+      margin-bottom: 1rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
     }
 
-    .about-col .lang-label {
+    .lang-toggle button {
       font-family: var(--font-mono);
       font-size: 0.75rem;
+      color: var(--text-muted);
+      background: none;
+      border: none;
+      padding: 0.3rem 0.75rem;
+      cursor: pointer;
+      transition: color 0.2s ease, background 0.2s ease;
+    }
+
+    .lang-toggle button + button {
+      border-left: 1px solid var(--border);
+    }
+
+    .lang-toggle button:hover {
+      color: var(--text);
+    }
+
+    .lang-toggle button[aria-pressed="true"] {
       color: var(--accent);
-      margin-bottom: 0.5rem;
+      background: var(--accent-dim);
+    }
+
+    .about-col {
+      max-width: 46rem;
     }
 
     .about-col p {
@@ -492,11 +515,6 @@
 
       .hero {
         padding: 3.5rem 0 2.5rem;
-      }
-
-      .about-grid {
-        grid-template-columns: 1fr;
-        gap: 1.25rem;
       }
 
       .nav-links {
@@ -935,9 +953,12 @@
          ============================================================ -->
     <section id="about" class="reveal">
       <h2 class="section-title" data-typewriter-scroll><span class="num">04</span> about</h2>
-      <div class="about-grid">
-        <div class="about-col">
-          <p class="lang-label">[ EN ]</p>
+      <div class="lang-toggle" role="group" aria-label="About language">
+        <button type="button" data-lang-btn="en" aria-pressed="true">EN</button>
+        <button type="button" data-lang-btn="es" aria-pressed="false">ES</button>
+      </div>
+      <div class="about-text">
+        <div class="about-col" data-lang="en">
           <p>
             I'm a Computer Engineering student at the
             <strong>University of Puerto Rico, Mayagüez</strong>, graduating in
@@ -954,8 +975,7 @@
             or <strong>cybersecurity</strong>.
           </p>
         </div>
-        <div class="about-col" lang="es">
-          <p class="lang-label">[ ES ]</p>
+        <div class="about-col" data-lang="es" lang="es" hidden>
           <p>
             Soy estudiante de Ingeniería en Computadoras en la
             <strong>Universidad de Puerto Rico, Mayagüez</strong>, y me graduaré
@@ -1370,6 +1390,22 @@
     } else {
       runIntroTypewriter();
     }
+
+    /* ============================================================
+       About — EN / ES toggle
+       ============================================================ */
+    const langButtons = document.querySelectorAll("[data-lang-btn]");
+    langButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const lang = button.dataset.langBtn;
+        langButtons.forEach((other) => {
+          other.setAttribute("aria-pressed", String(other === button));
+        });
+        document.querySelectorAll(".about-col[data-lang]").forEach((col) => {
+          col.hidden = col.dataset.lang !== lang;
+        });
+      });
+    });
 
     // Safety net for the back/forward cache: never leave text half-typed
     // or sections hidden when the page is restored.
