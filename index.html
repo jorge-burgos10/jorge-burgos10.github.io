@@ -117,14 +117,23 @@
     }
 
     /* Typewriter intro — the whole hero types itself on the first visit */
+    /* The cursor is an empty inline with the bar drawn as an absolutely
+       positioned pseudo-element, so it takes no space in the line: adding
+       or removing it never pushes text onto another line, and it never
+       creates a line-break opportunity in the middle of a word. */
     .typewriter-cursor {
-      display: inline-block;
-      width: 0.12em;
-      height: 1.05em;
-      background: var(--accent);
-      margin-left: 1px;
-      vertical-align: text-bottom;
+      position: relative;
       animation: cursor-blink 0.85s step-end infinite;
+    }
+
+    .typewriter-cursor::after {
+      content: "";
+      position: absolute;
+      left: 1px;
+      top: 0;
+      bottom: 0;
+      width: 0.12em;
+      background: var(--accent);
     }
 
     @keyframes cursor-blink {
@@ -270,7 +279,8 @@
       margin-bottom: 1.75rem;
     }
 
-    .hero-facts span::before {
+    /* Direct children only: the typewriter adds its own inner spans */
+    .hero-facts > span::before {
       content: "▸ ";
       color: var(--accent);
     }
@@ -1348,7 +1358,7 @@
         [hero.querySelector("h1"), { speed: 28, pauseAfter: 220 }],
         [hero.querySelector(".title"), { speed: 16, pauseAfter: 140 }],
         [hero.querySelector(".tagline"), { speed: 6, pauseAfter: 140 }],
-        ...[...hero.querySelectorAll(".hero-facts span")].map((fact) => [
+        ...[...hero.querySelectorAll(".hero-facts > span")].map((fact) => [
           fact,
           { speed: 12, pauseAfter: 60 },
         ]),
