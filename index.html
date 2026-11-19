@@ -1233,6 +1233,51 @@
         transition: none;
       }
     }
+
+    /* ============================================================
+       Skill filters — "core" shows the strongest skills by default;
+       the other buttons show one group, or all of them
+       ============================================================ */
+    .skill-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-bottom: 1.1rem;
+    }
+
+    .skill-filters button {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 0.3rem 0.8rem;
+      cursor: pointer;
+      transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+    }
+
+    .skill-filters button:hover {
+      color: var(--text);
+      border-color: #2f3a48;
+    }
+
+    .skill-filters button[aria-pressed="true"] {
+      color: var(--accent);
+      border-color: var(--accent);
+      background: var(--accent-dim);
+    }
+
+    /* In the full view, core skills get a subtle teal outline */
+    .skills-grid.show-core-marks .skills-list li[data-core] {
+      box-shadow: inset 0 0 0 1px rgba(86, 182, 194, 0.35);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .skill-filters button {
+        transition: none;
+      }
+    }
   </style>
 </head>
 
@@ -1369,24 +1414,25 @@
     <section id="skills" class="reveal">
       <h2 class="section-title" data-typewriter-scroll><span class="num">03</span> <span class="label">skills</span></h2>
       <div class="skills-grid">
-        <div class="skills-group">
+        <div class="skills-group" data-skill-group="languages">
           <h3>languages</h3>
           <ul class="skills-list">
-            <li>Python</li>
+            <li data-core>Python</li>
             <li>Java</li>
             <li>C++</li>
             <li>C</li>
-            <li>SQL</li>
+            <li data-core>SQL</li>
             <li>JavaScript</li>
             <li>Verilog</li>
             <li>PowerShell</li>
           </ul>
         </div>
 
-        <div class="skills-group">
+        <div class="skills-group" data-skill-group="backend">
           <h3>backend &amp; frontend</h3>
           <ul class="skills-list">
-            <li>FastAPI</li>
+            <li data-core>FastAPI</li>
+            <li data-core>Flask</li>
             <li>REST API design</li>
             <li>psycopg2</li>
             <li>Streamlit</li>
@@ -1396,39 +1442,39 @@
           </ul>
         </div>
 
-        <div class="skills-group">
+        <div class="skills-group" data-skill-group="data">
           <h3>data &amp; etl</h3>
           <ul class="skills-list">
-            <li>pandas</li>
-            <li>ETL pipelines</li>
+            <li data-core>pandas</li>
+            <li data-core>ETL pipelines</li>
             <li>Data cleaning</li>
-            <li>PostgreSQL 17</li>
-            <li>PostGIS</li>
+            <li data-core>PostgreSQL 17</li>
+            <li data-core>PostGIS</li>
           </ul>
         </div>
 
-        <div class="skills-group">
+        <div class="skills-group" data-skill-group="cloud">
           <h3>cloud &amp; infrastructure</h3>
           <ul class="skills-list">
-            <li>AWS Lambda</li>
+            <li data-core>AWS Lambda</li>
             <li>API Gateway</li>
-            <li>S3</li>
+            <li data-core>S3</li>
             <li>IAM</li>
             <li>CloudFormation</li>
             <li>CloudWatch</li>
             <li>RDS</li>
             <li>SQS</li>
             <li>AWS CLI</li>
-            <li>Docker</li>
+            <li data-core>Docker</li>
             <li>Git/GitHub</li>
             <li>Linux</li>
           </ul>
         </div>
 
-        <div class="skills-group">
+        <div class="skills-group" data-skill-group="automation">
           <h3>automation</h3>
           <ul class="skills-list">
-            <li>GitHub Actions CI</li>
+            <li data-core>GitHub Actions CI</li>
             <li>Event-driven AWS Lambda</li>
             <li>S3 lifecycle rules</li>
             <li>ETL orchestration</li>
@@ -1436,10 +1482,10 @@
           </ul>
         </div>
 
-        <div class="skills-group">
+        <div class="skills-group" data-skill-group="ai">
           <h3>ai</h3>
           <ul class="skills-list">
-            <li>MCP servers</li>
+            <li data-core>MCP servers</li>
             <li>LLM tool calling</li>
             <li>Cursor SDK</li>
             <li>Prompt engineering</li>
@@ -1447,7 +1493,7 @@
           </ul>
         </div>
 
-        <div class="skills-group">
+        <div class="skills-group" data-skill-group="security">
           <h3>cybersecurity</h3>
           <ul class="skills-list">
             <li>Network security concepts</li>
@@ -1816,6 +1862,74 @@
         }).observe(svg);
       }
       setInterval(update, 100);
+    })();
+
+    /* ============================================================
+       Skill filters
+       ------------------------------------------------------------
+       Without JS every group shows, as before. With JS a row of
+       filter buttons appears; "core" (the default) shows one card
+       with the skills marked data-core, "all" shows every group,
+       and each category shows just its group.
+       ============================================================ */
+    (() => {
+      const grid = document.querySelector(".skills-grid");
+      if (!grid) return;
+      const groups = [...grid.querySelectorAll("[data-skill-group]")];
+
+      // Card that collects the core skills.
+      const coreGroup = document.createElement("div");
+      coreGroup.className = "skills-group";
+      coreGroup.dataset.skillGroup = "core";
+      const coreTitle = document.createElement("h3");
+      coreTitle.textContent = "core";
+      const coreList = document.createElement("ul");
+      coreList.className = "skills-list";
+      grid.querySelectorAll("li[data-core]").forEach((item) => {
+        coreList.appendChild(item.cloneNode(true));
+      });
+      coreGroup.append(coreTitle, coreList);
+      grid.prepend(coreGroup);
+
+      const filters = [
+        ["core", "core"],
+        ["all", "all"],
+        ["languages", "languages"],
+        ["backend", "backend"],
+        ["data", "data"],
+        ["cloud", "cloud"],
+        ["automation", "automation"],
+        ["ai", "ai"],
+        ["security", "security"],
+      ];
+
+      const bar = document.createElement("div");
+      bar.className = "skill-filters";
+      bar.setAttribute("role", "group");
+      bar.setAttribute("aria-label", "Filter skills");
+
+      const apply = (key) => {
+        bar.querySelectorAll("button").forEach((button) => {
+          button.setAttribute("aria-pressed", String(button.dataset.filter === key));
+        });
+        coreGroup.hidden = key !== "core";
+        groups.forEach((group) => {
+          group.hidden = !(key === "all" || group.dataset.skillGroup === key);
+        });
+        grid.classList.toggle("show-core-marks", key === "all");
+      };
+
+      filters.forEach(([key, label]) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.dataset.filter = key;
+        button.textContent = label;
+        button.addEventListener("click", () => apply(key));
+        bar.appendChild(button);
+      });
+
+      grid.before(bar);
+      apply("core");
     })();
 
     const grid = document.getElementById("projects-grid");
