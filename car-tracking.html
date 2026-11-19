@@ -529,10 +529,42 @@
       height: 1.75rem;
       width: auto;
     }
+
+    /* ============================================================
+       Accessibility fixes
+       ============================================================ */
+    /* Skip link — hidden until focused with the keyboard */
+    .skip-link {
+      position: absolute;
+      left: 1rem;
+      top: -3rem;
+      z-index: 20;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: var(--accent);
+      background: var(--bg-card);
+      border: 1px solid var(--accent);
+      border-radius: 6px;
+      padding: 0.45rem 0.9rem;
+      transition: top 0.15s ease;
+    }
+
+    .skip-link:focus {
+      top: 0.75rem;
+      text-decoration: none;
+    }
+
+    /* Taller hit area (24px+) for the back link, same look */
+    .nav-back {
+      display: inline-block;
+      padding: 0.25rem 0;
+    }
   </style>
 </head>
 
 <body>
+  <a class="skip-link" href="#content">Skip to content</a>
+
   <!-- ============================================================
        Top navigation — back to the portfolio
        ============================================================ -->
@@ -543,7 +575,7 @@
     </div>
   </nav>
 
-  <main class="wrap">
+  <main class="wrap" id="content">
     <!-- ============================================================
          Hero
          ============================================================ -->
@@ -669,7 +701,7 @@
       <div class="shot">
         <h3><span class="step">02.</span>Live fleet map</h3>
         <p>
-          The Vehicle Pings view renders every vehicle's latest GPS ping on an
+          The Vehicle Pings view renders every vehicle’s latest GPS ping on an
           interactive Folium map, served as GeoJSON from the API. Users can pan,
           zoom, and filter the fleet across the Mayagüez area.
         </p>
@@ -686,7 +718,7 @@
           with start/end markers and the matching trip IDs.
         </p>
         <figure class="figure">
-          <img src="images/car-tracking/breadcrumb.webp" width="2145" height="1991" alt="Breadcrumb view showing a vehicle's route over a selected time range" loading="lazy" />
+          <img src="images/car-tracking/breadcrumb.webp" width="2145" height="1991" alt="Breadcrumb view showing a vehicle’s route over a selected time range" loading="lazy" />
         </figure>
       </div>
 

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Jorge Burgos — Computer Engineering student at UPRM. Portfolio, projects, and contact." />
+  <meta name="description" content="Jorge Burgos — Computer Engineering student at UPRM who builds backend and data systems: ETL pipelines, REST APIs, and serverless AWS. Seeking a Summer 2027 internship." />
   <title>Jorge Burgos — Computer Engineering @ UPRM</title>
 
   <meta name="theme-color" content="#0d1117" />
@@ -16,7 +16,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://jorgeburgos.me/" />
   <meta property="og:title" content="Jorge Burgos — Computer Engineering @ UPRM" />
-  <meta property="og:description" content="Backend systems, ETL pipelines, REST APIs, and geospatial databases. Portfolio, projects, and contact." />
+  <meta property="og:description" content="Backend and data systems: ETL pipelines, REST APIs, and serverless AWS. Seeking a Summer 2027 internship in backend, data engineering, automation, or cloud." />
   <meta property="og:image" content="https://jorgeburgos.me/images/og.png" />
   <meta name="twitter:card" content="summary_large_image" />
 
@@ -770,10 +770,85 @@
       left: 0;
       color: var(--accent);
     }
+
+    /* ============================================================
+       Accessibility + mobile fixes
+       ============================================================ */
+    /* Skip link — hidden until focused with the keyboard */
+    .skip-link {
+      position: absolute;
+      left: 1rem;
+      top: -3rem;
+      z-index: 20;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: var(--accent);
+      background: var(--bg-card);
+      border: 1px solid var(--accent);
+      border-radius: 6px;
+      padding: 0.45rem 0.9rem;
+      transition: top 0.15s ease;
+    }
+
+    .skip-link:focus {
+      top: 0.75rem;
+      text-decoration: none;
+    }
+
+    /* Intro buttons stay out of the keyboard order until they appear */
+    .intro-deferred {
+      visibility: hidden;
+    }
+
+    body.intro-ready .intro-deferred {
+      visibility: visible;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .intro-deferred {
+        visibility: visible;
+      }
+    }
+
+    /* Taller hit areas (24px+) for the small text links, same look */
+    .nav-links a,
+    .project-links a {
+      display: inline-block;
+      padding: 0.25rem 0;
+    }
+
+    /* Phones: keep the nav on one row; the links scroll sideways */
+    @media (max-width: 640px) {
+      .nav-inner {
+        gap: 1rem;
+        padding: 0.45rem 0 0.45rem 1.25rem;
+      }
+
+      .nav-links {
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        gap: 1.1rem;
+        overflow-x: auto;
+        scrollbar-width: none;
+        padding: 0.2rem 1.5rem 0.2rem 0.2rem;
+        -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 1.75rem), transparent);
+        mask-image: linear-gradient(to right, #000 calc(100% - 1.75rem), transparent);
+      }
+
+      .nav-links::-webkit-scrollbar {
+        display: none;
+      }
+
+      .nav-links a {
+        white-space: nowrap;
+      }
+    }
   </style>
 </head>
 
 <body>
+  <a class="skip-link" href="#top">Skip to content</a>
+
   <!-- ============================================================
        Top navigation
        ============================================================ -->
@@ -802,7 +877,7 @@
       <p class="tagline" data-typewriter>
         I build <strong>backend systems</strong> — ETL pipelines, REST APIs, and
         geospatial database systems with <strong>Python</strong>,
-        <strong>PostgreSQL</strong>, and <strong>PostGIS</strong> — and I'm
+        <strong>PostgreSQL</strong>, and <strong>PostGIS</strong> — and I’m
         interested in <strong>AI</strong> and <strong>LLMs</strong>, integrating
         them into real-world applications.
       </p>
@@ -970,7 +1045,7 @@
       <div class="about-text">
         <div class="about-col" data-lang="en">
           <p>
-            I'm a Computer Engineering student at the
+            I’m a Computer Engineering student at the
             <strong>University of Puerto Rico, Mayagüez</strong>, graduating in
             December 2027. I build <strong>backend and data systems</strong> and
             automate the work around them: <strong>ETL pipelines</strong> with data
@@ -980,7 +1055,7 @@
             automate, and test a production <strong>serverless AWS</strong> backend,
             shipping changes through pull requests, code reviews, and CI. I also
             built an <strong>AI assistant with a custom MCP server</strong> for my
-            Car Tracking project. I'm looking for a <strong>Summer 2027
+            Car Tracking project. I’m looking for a <strong>Summer 2027
             internship</strong> in backend, data engineering, automation, or cloud.
           </p>
         </div>
