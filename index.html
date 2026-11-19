@@ -1192,6 +1192,47 @@
       from { transform: scale(0.4); }
       to { transform: scale(1); }
     }
+
+    /* "more about this role" — extra detail, collapsed by default */
+    .experience-points strong {
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .experience-more summary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.25rem 0;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--accent);
+      cursor: pointer;
+      list-style: none;
+    }
+
+    .experience-more summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .experience-more summary::before {
+      content: "▸";
+      transition: transform 0.2s ease;
+    }
+
+    .experience-more[open] summary::before {
+      transform: rotate(90deg);
+    }
+
+    .experience-more[open] summary {
+      margin-bottom: 0.6rem;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .experience-more summary::before {
+        transition: none;
+      }
+    }
   </style>
 </head>
 
@@ -1224,11 +1265,8 @@
       <h1 data-typewriter>Jorge Burgos</h1>
       <p class="title" data-typewriter>Computer Engineering Student @ UPRM</p>
       <p class="tagline" data-typewriter>
-        I build <strong>backend and data systems</strong>: ETL pipelines with
-        data validation, REST APIs, geospatial databases, and an
-        <strong>AI assistant with a custom MCP server</strong>. As an
-        undergraduate researcher, I secure, automate, and test a production
-        <strong>serverless AWS</strong> backend.
+        I build <strong>backend and data systems</strong>: ETL pipelines, REST
+        APIs, geospatial databases, and <strong>serverless AWS</strong> backends.
       </p>
       <div class="hero-facts">
         <span data-typewriter>Mayagüez, Puerto Rico</span>
@@ -1263,39 +1301,46 @@
         <p class="experience-org">SCOPE Project (Software Team) · IoT Lab, UPRM</p>
         <p class="experience-summary">
           SCOPE monitors campus parking lots with cameras: YOLO models locate each
-          parking space and predict the probability that it is occupied.
+          space and predict whether it is occupied.
         </p>
         <ul class="experience-points">
           <li>
-            Work on the project’s production serverless AWS backend (API Gateway,
-            S3, SQS, RDS PostgreSQL), inherited from a previous capstone team.
+            Migrated the backend with the team from <strong>~40 Lambda functions
+            to a Flask app on about 5</strong>.
           </li>
           <li>
-            Migrated the backend with the team from ~40 single-purpose Lambda
-            functions to a Flask app running on about 5 Lambdas, using an adapter
-            that turns each Lambda event into the request Flask expects.
+            Secured unauthenticated API routes with <strong>IAM authorization and
+            rate limiting</strong>.
           </li>
           <li>
-            Audited the architecture and secured unauthenticated API routes with
-            IAM authorization and rate limiting, verified in production.
-          </li>
-          <li>
-            Designed S3 lifecycle rules and an event-driven Lambda that deletes
-            processed images within seconds, removing ~12 GB of stored photos for
-            privacy.
-          </li>
-          <li>
-            Measured API latency to separate cold-start from warm response times.
-          </li>
-          <li>
-            Set up GitHub Actions CI with automated tests; ship changes through
-            pull requests and code reviews.
-          </li>
-          <li>
-            Next: improving the web app and building a mobile app so students can
-            see in real time which parking spaces are free.
+            Built S3 lifecycle rules and an event-driven Lambda that delete processed
+            photos within seconds: <strong>~12 GB removed</strong>.
           </li>
         </ul>
+        <details class="experience-more">
+          <summary>more about this role</summary>
+          <ul class="experience-points">
+            <li>
+              Production serverless AWS backend (API Gateway, S3, SQS, RDS
+              PostgreSQL), inherited from a previous capstone team.
+            </li>
+            <li>
+              The Flask app runs inside the Lambdas through an adapter that turns
+              each Lambda event into the request Flask expects.
+            </li>
+            <li>
+              Measured API latency to separate cold-start from warm response times.
+            </li>
+            <li>
+              Set up GitHub Actions CI with automated tests; changes ship through
+              pull requests and code reviews.
+            </li>
+            <li>
+              Next: improving the web app and building a mobile app so students can
+              see in real time which parking spaces are free.
+            </li>
+          </ul>
+        </details>
         <div class="project-tags">
           <span>AWS</span>
           <span>Lambda</span>
@@ -1426,33 +1471,20 @@
           <p>
             I’m a Computer Engineering student at the
             <strong>University of Puerto Rico, Mayagüez</strong>, graduating in
-            December 2027. I build <strong>backend and data systems</strong> and
-            automate the work around them: <strong>ETL pipelines</strong> with data
-            validation, <strong>REST APIs</strong>, geospatial databases,
-            event-driven cloud functions, and CI workflows. As an undergraduate
-            research assistant on the <strong>SCOPE project</strong>, I secure,
-            automate, and test a production <strong>serverless AWS</strong> backend,
-            shipping changes through pull requests, code reviews, and CI. I also
-            built an <strong>AI assistant with a custom MCP server</strong> for my
-            Car Tracking project. I’m looking for a <strong>Summer 2027
-            internship</strong> in backend, data engineering, automation, or cloud.
+            December 2027. Most of my work is backend and data engineering, and I’m
+            drawn to <strong>AI and LLMs</strong>, especially integrating them into
+            real applications. I speak Spanish (native), English (proficient), and
+            some French.
           </p>
         </div>
         <div class="about-col" data-lang="es" lang="es" hidden>
           <p>
             Soy estudiante de Ingeniería en Computadoras en la
             <strong>Universidad de Puerto Rico, Mayagüez</strong>, y me graduaré en
-            diciembre de 2027. Construyo <strong>sistemas backend y de datos</strong>
-            y automatizo el trabajo a su alrededor: <strong>pipelines ETL</strong>
-            con validación de datos, <strong>APIs REST</strong>, bases de datos
-            geoespaciales, funciones en la nube basadas en eventos y flujos de CI.
-            Como asistente de investigación subgraduado en el
-            <strong>proyecto SCOPE</strong>, aseguro, automatizo y pruebo un backend
-            <strong>serverless en AWS</strong> en producción, y entrego cambios
-            mediante pull requests, revisiones de código y CI. También construí un
-            <strong>asistente de IA con un servidor MCP propio</strong> para mi
-            proyecto Car Tracking. Busco una <strong>práctica para el verano de
-            2027</strong> en backend, ingeniería de datos, automatización o nube.
+            diciembre de 2027. La mayor parte de mi trabajo es backend e ingeniería
+            de datos, y me atraen la <strong>IA y los LLMs</strong>, sobre todo
+            integrarlos en aplicaciones reales. Hablo español (nativo), inglés
+            (avanzado) y algo de francés.
           </p>
         </div>
       </div>
@@ -1486,12 +1518,9 @@
       {
         name: "Car Tracking System: Data Pipeline, API & Analytics Dashboard",
         description:
-          "Database Systems team project: an ETL pipeline with data validation " +
-          "(Python, pandas, psycopg2) that loads large Parquet vehicle-ping " +
-          "datasets into PostgreSQL 17 / PostGIS, a 28-endpoint FastAPI REST " +
-          "API (handler/DAO architecture), and a Streamlit web app (Plotly, " +
-          "Folium) with an AI assistant built on a custom MCP server. " +
-          "Deployed on Render.",
+          "Team project: an ETL pipeline with data validation into PostgreSQL / " +
+          "PostGIS, a 28-endpoint FastAPI API, and a Streamlit map app with an " +
+          "AI assistant (MCP). Deployed on Render.",
         language: "Python",
         tags: ["pandas", "PostgreSQL", "PostGIS", "FastAPI", "Streamlit", "Docker", "MCP"],
         status: "Completed",
@@ -1506,10 +1535,8 @@
       {
         name: "EV Charging Station Reservation System",
         description:
-          "Data Structures project: a Java system managing users, vehicles, " +
-          "and reservations across 5 UPRM campus charging stations, with " +
-          "scheduling conflict detection, an automated wait queue, and " +
-          "stack-based undo (HashSet, Queue, Stack).",
+          "Java reservation system for 5 UPRM charging stations, with " +
+          "conflict detection, an automated wait queue, and stack-based undo.",
         language: "Java",
         tags: ["Java", "Data Structures"],
         status: "Completed",
@@ -1521,10 +1548,8 @@
       {
         name: "PA-RISC Pipelined Processor",
         description:
-          "Fully pipelined PA-RISC processor in Verilog with 5 stages " +
-          "(IF → ID → EX → MEM → WB), hazard detection, a 32-bit ALU with " +
-          "ZNVC flags, control unit, and a self-contained test bench with " +
-          "binary program loading via $readmemb.",
+          "5-stage pipelined PA-RISC processor in Verilog with hazard " +
+          "detection, a 32-bit ALU, and a test bench that loads binary programs.",
         language: "Verilog",
         tags: ["Verilog", "Icarus Verilog", "Computer Architecture"],
         status: "Completed",
