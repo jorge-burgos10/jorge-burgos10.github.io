@@ -1169,7 +1169,7 @@
     }
 
     /* ============================================================
-       Logo replay on hover / keyboard focus — a quicker redraw that
+       Logo replay on click — a quicker redraw that
        starts from a faint, partly drawn logo (never fully empty)
        ============================================================ */
     .nav-logo.logo-replay .logo-stroke {
@@ -2128,9 +2128,9 @@
     /* ============================================================
        Logo replay
        ------------------------------------------------------------
-       Hovering the logo (or reaching it with Tab) replays a short
-       version of the drawing. A replay always finishes before the
-       next one can start. Not for touch taps or reduced motion.
+       Clicking the logo replays a short version of the drawing. A
+       replay always finishes before the next one can start. Off for
+       reduced motion.
        ============================================================ */
     (() => {
       const logo = document.querySelector(".nav-logo");
@@ -2157,14 +2157,8 @@
         }, 800);
       };
 
-      // Decide per event: touch-screen laptops report "no hover" even when a
-      // mouse is used, so check the pointer that actually entered.
-      link.addEventListener("pointerenter", (event) => {
-        if (event.pointerType === "mouse" || event.pointerType === "pen") replay();
-      });
-      link.addEventListener("focus", () => {
-        if (link.matches(":focus-visible")) replay();
-      });
+      // Clicking the logo (mouse, touch, or Enter on the keyboard) replays it.
+      link.addEventListener("click", replay);
     })();
   </script>
 </body>
