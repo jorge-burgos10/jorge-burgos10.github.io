@@ -27,15 +27,17 @@
   </g>
 
   <!-- Hazard / forwarding path: EX back to ID -->
-  <path d="M400 170V125H260V170" fill="none" stroke="#94a3b3" stroke-width="2" stroke-dasharray="6 6" stroke-linejoin="round" opacity="0.7"/>
+  <path class="pop" style="--d: 1.7s; --o: 0.7" d="M400 170V125H260V170" fill="none" stroke="#94a3b3" stroke-width="2" stroke-dasharray="6 6" stroke-linejoin="round" opacity="0.7"/>
 
   <!-- Write-back loop: WB back to ID -->
+  <g class="pop" style="--d: 1.5s">
   <path d="M680 300V350H260V300" fill="none" stroke="#56b6c2" stroke-width="2.5" stroke-dasharray="7 6" stroke-linejoin="round"/>
   <path d="M253 311L260 300L267 311" fill="none" stroke="#56b6c2" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
 
   <!-- Main data path -->
-  <path d="M30 235H770" fill="none" stroke="#56b6c2" stroke-width="5" stroke-linecap="round"/>
-  <path d="M758 225L770 235L758 245" fill="none" stroke="#56b6c2" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path class="draw" pathLength="1" d="M30 235H770" fill="none" stroke="#56b6c2" stroke-width="5" stroke-linecap="round"/>
+  <path class="pop" style="--d: 1.4s" d="M758 225L770 235L758 245" fill="none" stroke="#56b6c2" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
 
   <!-- Five stages: IF, ID, EX, MEM, WB -->
   <g fill="#111822" stroke="#283340" stroke-width="2">

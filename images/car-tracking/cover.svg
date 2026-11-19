@@ -55,20 +55,24 @@
   </g>
 
   <!-- Tracked route -->
-  <path d="M110 360L260 330L520 250L520 130L670 95" fill="none" stroke="#56b6c2" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path class="draw" pathLength="1" d="M110 360L260 330L520 250L520 130L670 95" fill="none" stroke="#56b6c2" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
   <g fill="#0d1117" stroke="#56b6c2" stroke-width="2.5">
-    <circle cx="185" cy="345" r="5"/>
-    <circle cx="260" cy="330" r="5"/>
-    <circle cx="390" cy="290" r="5"/>
-    <circle cx="520" cy="250" r="5"/>
-    <circle cx="520" cy="190" r="5"/>
-    <circle cx="520" cy="130" r="5"/>
-    <circle cx="595" cy="112.5" r="5"/>
+    <circle class="pop" style="--d: 0.45s" cx="185" cy="345" r="5"/>
+    <circle class="pop" style="--d: 0.56s" cx="260" cy="330" r="5"/>
+    <circle class="pop" style="--d: 0.7s" cx="390" cy="290" r="5"/>
+    <circle class="pop" style="--d: 0.81s" cx="520" cy="250" r="5"/>
+    <circle class="pop" style="--d: 0.88s" cx="520" cy="190" r="5"/>
+    <circle class="pop" style="--d: 0.94s" cx="520" cy="130" r="5"/>
+    <circle class="pop" style="--d: 1.07s" cx="595" cy="112.5" r="5"/>
   </g>
 
   <!-- Start and current position -->
-  <circle cx="110" cy="360" r="8" fill="#e2e8f0"/>
-  <circle cx="670" cy="95" r="26" fill="#56b6c2" opacity="0.12"/>
-  <circle cx="670" cy="95" r="16" fill="#56b6c2" opacity="0.22"/>
-  <circle cx="670" cy="95" r="8" fill="#56b6c2" stroke="#0d1117" stroke-width="2"/>
+  <g class="pop" style="--d: 0s">
+    <circle cx="110" cy="360" r="8" fill="#e2e8f0"/>
+  </g>
+  <g class="pop" style="--d: 1.5s">
+    <circle cx="670" cy="95" r="26" fill="#56b6c2" opacity="0.12"/>
+    <circle cx="670" cy="95" r="16" fill="#56b6c2" opacity="0.22"/>
+    <circle cx="670" cy="95" r="8" fill="#56b6c2" stroke="#0d1117" stroke-width="2"/>
+  </g>
 </svg>

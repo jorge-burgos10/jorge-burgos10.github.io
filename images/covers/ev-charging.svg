@@ -34,10 +34,10 @@
   </g>
 
   <!-- Campus loop road -->
-  <path d="M120 250Q130 90 330 90L600 80Q720 85 720 220L700 380Q690 440 560 440L260 450Q130 440 120 250Z" fill="none" stroke="#283340" stroke-width="7" stroke-linejoin="round"/>
+  <path class="draw" pathLength="1" d="M120 250Q130 90 330 90L600 80Q720 85 720 220L700 380Q690 440 560 440L260 450Q130 440 120 250Z" fill="none" stroke="#283340" stroke-width="7" stroke-linejoin="round"/>
 
   <!-- Charging stations -->
-  <g>
+  <g class="pop" style="--d: 1.2s">
     <circle cx="215" cy="135" r="16" fill="#0d1117" stroke="#56b6c2" stroke-width="2.5"/>
     <use href="#bolt" x="215" y="135" fill="#56b6c2"/>
 

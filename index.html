@@ -23,6 +23,21 @@
   <!-- Marks the page as JS-enabled so scroll reveals only hide content when they can show it again -->
   <script>document.documentElement.classList.add("js");</script>
 
+  <!-- Draw the "jb." logo once per browser session (skipped for reduced motion) -->
+  <script>
+    try {
+      if (
+        !sessionStorage.getItem("logoAnimated") &&
+        !window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      ) {
+        document.documentElement.classList.add("logo-intro");
+        sessionStorage.setItem("logoAnimated", "1");
+      }
+    } catch (error) {
+      // Storage unavailable — show the logo without the animation.
+    }
+  </script>
+
   <!-- Google Fonts: JetBrains Mono for headings/code, Inter for body text -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -287,6 +302,7 @@
 
     .hero-links {
       display: flex;
+      flex-wrap: wrap;
       gap: 0.9rem;
     }
 
@@ -843,6 +859,141 @@
         white-space: nowrap;
       }
     }
+
+    /* ============================================================
+       "jb." logo — strokes draw in, then the dots pop (first visit)
+       ============================================================ */
+    .nav-name svg {
+      display: block;
+      height: 1.75rem;
+      width: auto;
+      overflow: visible;
+    }
+
+    html.logo-intro .logo-stroke {
+      stroke-dasharray: 1;
+      stroke-dashoffset: 1;
+      animation: logo-draw 0.45s cubic-bezier(0.65, 0, 0.35, 1) var(--d) forwards;
+    }
+
+    html.logo-intro .logo-dot {
+      opacity: 0;
+      transform: scale(0);
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: logo-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) var(--d) forwards;
+    }
+
+    @keyframes logo-draw {
+      to { stroke-dashoffset: 0; }
+    }
+
+    @keyframes logo-pop {
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    /* ============================================================
+       Buttons — small press feedback
+       ============================================================ */
+    .btn {
+      display: inline-block;
+      transition: border-color 0.2s ease, background 0.2s ease, transform 0.1s ease;
+    }
+
+    .btn:active {
+      transform: translateY(1px) scale(0.98);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .btn:active {
+        transform: none;
+      }
+    }
+
+    /* ============================================================
+       Project covers — lines draw themselves when scrolled into view
+       ============================================================ */
+    .project-thumb svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.4s ease;
+    }
+
+    .project-card:hover .project-thumb svg {
+      transform: scale(1.03);
+    }
+
+    .cover-anim .draw {
+      stroke-dasharray: 1;
+      stroke-dashoffset: 1;
+    }
+
+    .cover-anim .pop {
+      opacity: 0;
+      transform: scale(0.4);
+      transform-box: fill-box;
+      transform-origin: center;
+    }
+
+    .cover-anim.drawn .draw {
+      animation: cover-draw 1.6s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+    }
+
+    .cover-anim.drawn .pop {
+      animation: cover-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) var(--d, 1.2s) forwards;
+    }
+
+    @keyframes cover-draw {
+      to { stroke-dashoffset: 0; }
+    }
+
+    @keyframes cover-pop {
+      to { opacity: var(--o, 1); transform: none; }
+    }
+
+    /* ============================================================
+       Copy email — small "email copied" note above the button
+       ============================================================ */
+    .btn[data-copy-email] {
+      position: relative;
+    }
+
+    .btn[data-copy-email].copied::after {
+      content: "email copied";
+      position: absolute;
+      left: 50%;
+      bottom: calc(100% + 0.45rem);
+      transform: translateX(-50%);
+      white-space: nowrap;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--accent);
+      background: var(--bg-card);
+      border: 1px solid var(--accent);
+      border-radius: 4px;
+      padding: 0.15rem 0.5rem;
+      pointer-events: none;
+      animation: copied-note 1.8s ease forwards;
+    }
+
+    @keyframes copied-note {
+      0% { opacity: 0; translate: 0 4px; }
+      12%, 80% { opacity: 1; translate: 0 0; }
+      100% { opacity: 0; }
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
   </style>
 </head>
 
@@ -854,7 +1005,7 @@
        ============================================================ -->
   <nav class="nav">
     <div class="nav-inner">
-      <a href="#top" class="nav-name" aria-label="Jorge Burgos — home"><img src="images/logo.svg" alt="" width="28" height="28" /></a>
+      <a href="#top" class="nav-name" aria-label="Jorge Burgos — home"><svg class="nav-logo" viewBox="0 0 64 64" width="28" height="28" aria-hidden="true" focusable="false"><g fill="none" stroke="#e2e8f0" stroke-width="7"><path class="logo-stroke" pathLength="1" style="--d: 0.1s" d="M17 23.5V48Q17 57 8.5 57"/><path class="logo-stroke" pathLength="1" style="--d: 0.3s" d="M28 10V49.5"/><circle class="logo-stroke" pathLength="1" style="--d: 0.5s" cx="37.5" cy="36.5" r="9.5"/></g><circle class="logo-dot" style="--d: 0.75s" cx="17" cy="13.5" r="4" fill="#e2e8f0"/><circle class="logo-dot" style="--d: 1.05s" cx="57" cy="45.5" r="4" fill="#56b6c2"/></svg></a>
       <div class="nav-links">
         <a href="#experience">experience</a>
         <a href="#projects">projects</a>
@@ -875,11 +1026,11 @@
       <h1 data-typewriter>Jorge Burgos</h1>
       <p class="title" data-typewriter>Computer Engineering Student @ UPRM</p>
       <p class="tagline" data-typewriter>
-        I build <strong>backend systems</strong> — ETL pipelines, REST APIs, and
-        geospatial database systems with <strong>Python</strong>,
-        <strong>PostgreSQL</strong>, and <strong>PostGIS</strong> — and I’m
-        interested in <strong>AI</strong> and <strong>LLMs</strong>, integrating
-        them into real-world applications.
+        I build <strong>backend and data systems</strong>: ETL pipelines with
+        data validation, REST APIs, geospatial databases, and an
+        <strong>AI assistant with a custom MCP server</strong>. As an
+        undergraduate researcher, I secure, automate, and test a production
+        <strong>serverless AWS</strong> backend.
       </p>
       <div class="hero-facts">
         <span data-typewriter>Mayagüez, Puerto Rico</span>
@@ -887,9 +1038,10 @@
         <span data-typewriter>Internships: backend · data engineering · automation · cloud</span>
       </div>
       <div class="hero-links intro-deferred">
+        <a class="btn btn-primary" href="resume/Jorge_Burgos_Resume.pdf" target="_blank" rel="noopener noreferrer">Resume</a>
         <a class="btn" href="https://github.com/jorge-burgos10" target="_blank" rel="noopener noreferrer">GitHub</a>
         <a class="btn" href="https://www.linkedin.com/in/jorge-burgos-b5a8748a/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-        <a class="btn" href="mailto:jorgeburgos859@gmail.com">Email</a>
+        <a class="btn" href="mailto:jorgeburgos859@gmail.com" data-copy-email="jorgeburgos859@gmail.com">Email</a>
       </div>
     </section>
 
@@ -969,36 +1121,31 @@
         </div>
 
         <div class="skills-group">
-          <h3>frameworks</h3>
+          <h3>backend &amp; frontend</h3>
           <ul class="skills-list">
             <li>FastAPI</li>
-            <li>React (learning)</li>
+            <li>REST API design</li>
+            <li>psycopg2</li>
             <li>Streamlit</li>
+            <li>Plotly</li>
+            <li>Folium</li>
+            <li>React (learning)</li>
           </ul>
         </div>
 
         <div class="skills-group">
-          <h3>tools</h3>
+          <h3>data &amp; etl</h3>
           <ul class="skills-list">
-            <li>PostgreSQL</li>
+            <li>pandas</li>
+            <li>ETL pipelines</li>
+            <li>Data cleaning</li>
+            <li>PostgreSQL 17</li>
             <li>PostGIS</li>
-            <li>Git</li>
-            <li>Docker</li>
-            <li>Linux</li>
-            <li>Excel</li>
           </ul>
         </div>
 
         <div class="skills-group">
-          <h3>cybersecurity</h3>
-          <ul class="skills-list">
-            <li>Network Security</li>
-            <li>Security Fundamentals</li>
-          </ul>
-        </div>
-
-        <div class="skills-group">
-          <h3>cloud</h3>
+          <h3>cloud &amp; infrastructure</h3>
           <ul class="skills-list">
             <li>AWS Lambda</li>
             <li>API Gateway</li>
@@ -1009,6 +1156,9 @@
             <li>RDS</li>
             <li>SQS</li>
             <li>AWS CLI</li>
+            <li>Docker</li>
+            <li>Git/GitHub</li>
+            <li>Linux</li>
           </ul>
         </div>
 
@@ -1028,6 +1178,17 @@
           <ul class="skills-list">
             <li>MCP servers</li>
             <li>LLM tool calling</li>
+            <li>Cursor SDK</li>
+            <li>Prompt engineering</li>
+            <li>AI-assisted development</li>
+          </ul>
+        </div>
+
+        <div class="skills-group">
+          <h3>cybersecurity</h3>
+          <ul class="skills-list">
+            <li>Network security concepts</li>
+            <li>Cisco-curriculum cybersecurity training</li>
           </ul>
         </div>
       </div>
@@ -1088,7 +1249,7 @@
         Interested in working together, or have an internship opportunity in
         backend, data engineering, automation, or cloud? My inbox is open.
       </p>
-      <a class="btn btn-primary" href="mailto:jorgeburgos859@gmail.com">jorgeburgos859@gmail.com</a>
+      <a class="btn btn-primary" href="mailto:jorgeburgos859@gmail.com" data-copy-email="jorgeburgos859@gmail.com">jorgeburgos859@gmail.com</a>
     </section>
   </main>
 
@@ -1105,14 +1266,16 @@
        ============================================================ */
     const PROJECTS = [
       {
-        name: "Car Tracking System — REST API & ETL Pipeline",
+        name: "Car Tracking System: Data Pipeline, API & Analytics Dashboard",
         description:
-          "Full-stack geospatial fleet platform: a 28-endpoint FastAPI REST " +
-          "API (Handler/DAO, no ORM), an ETL pipeline ingesting Parquet data " +
-          "into PostgreSQL + PostGIS, a Streamlit web app with live Folium " +
-          "maps and Plotly charts, and an in-app AI Assistant. Deployed on Render.",
+          "Database Systems team project: an ETL pipeline with data validation " +
+          "(Python, pandas, psycopg2) that loads large Parquet vehicle-ping " +
+          "datasets into PostgreSQL 17 / PostGIS, a 28-endpoint FastAPI REST " +
+          "API (handler/DAO architecture), and a Streamlit web app (Plotly, " +
+          "Folium) with an AI assistant built on a custom MCP server. " +
+          "Deployed on Render.",
         language: "Python",
-        tags: ["FastAPI", "PostgreSQL", "PostGIS", "Streamlit", "Docker", "AI"],
+        tags: ["pandas", "PostgreSQL", "PostGIS", "FastAPI", "Streamlit", "Docker", "MCP"],
         status: "Completed",
         url: "https://github.com/DBSpring26/db-project-spring2026-cartracking-3neuronas",
         detailUrl: "car-tracking.html",
@@ -1125,12 +1288,12 @@
       {
         name: "EV Charging Station Reservation System",
         description:
-          "Console-based reservation platform for personal electric vehicles " +
-          "at 5 UPRM campus charging stations. Uses HashSet, HashMap, " +
-          "LinkedList queues, and a Stack-based undo system, enforcing " +
-          "booking rules with LocalDateTime and credit-based pricing.",
+          "Data Structures project: a Java system managing users, vehicles, " +
+          "and reservations across 5 UPRM campus charging stations, with " +
+          "scheduling conflict detection, an automated wait queue, and " +
+          "stack-based undo (HashSet, Queue, Stack).",
         language: "Java",
-        tags: ["Java", "Collections", "OOP"],
+        tags: ["Java", "Data Structures"],
         status: "Completed",
         url: "https://github.com/jorge-burgos10/EV-Charging-Station-Reservation-System",
         image: "images/covers/ev-charging.svg",
@@ -1236,6 +1399,7 @@
         img.height = 500;
         img.loading = "lazy";
         thumb.appendChild(img);
+        if (project.image.endsWith(".svg")) inlineCover(img, project.coverTitle);
 
         if (project.coverNote) {
           const note = document.createElement("span");
@@ -1261,6 +1425,109 @@
       }
       return card;
     }
+
+    /* ============================================================
+       Animated project covers
+       ------------------------------------------------------------
+       Each cover starts as a plain <img> (works without JS), then is
+       swapped for the same SVG inline so its lines can draw themselves
+       the first time the card scrolls into view.
+       ============================================================ */
+    const coverObserver =
+      "IntersectionObserver" in window
+        ? new IntersectionObserver(
+            (entries, obs) => {
+              entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                  setTimeout(() => entry.target.classList.add("drawn"), 200);
+                  obs.unobserve(entry.target);
+                }
+              });
+            },
+            { threshold: 0.35 }
+          )
+        : null;
+
+    function watchCover(svg) {
+      if (coverObserver) {
+        coverObserver.observe(svg);
+      } else {
+        svg.classList.add("drawn");
+      }
+    }
+
+    async function inlineCover(img, prefix) {
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      try {
+        const response = await fetch(img.getAttribute("src"));
+        if (!response.ok) return;
+        const doc = new DOMParser().parseFromString(await response.text(), "image/svg+xml");
+        const svg = doc.documentElement;
+        if (svg.nodeName !== "svg") return;
+
+        // Give ids a per-cover prefix so several inline SVGs can share the page.
+        svg.querySelectorAll("[id]").forEach((el) => {
+          const oldId = el.id;
+          const newId = `${prefix}-${oldId}`;
+          el.id = newId;
+          svg.querySelectorAll("*").forEach((node) => {
+            [...node.attributes].forEach((attr) => {
+              if (attr.value === `#${oldId}`) {
+                node.setAttribute(attr.name, `#${newId}`);
+              } else if (attr.value.includes(`url(#${oldId})`)) {
+                node.setAttribute(attr.name, attr.value.split(`url(#${oldId})`).join(`url(#${newId})`));
+              }
+            });
+          });
+        });
+
+        svg.removeAttribute("width");
+        svg.removeAttribute("height");
+        svg.setAttribute("preserveAspectRatio", "xMidYMid slice");
+        svg.setAttribute("aria-hidden", "true");
+        svg.setAttribute("focusable", "false");
+        svg.classList.add("cover-anim");
+
+        const inline = document.importNode(svg, true);
+        img.replaceWith(inline);
+
+        // If its section is already on screen, start watching now;
+        // otherwise showEl() does it when the section is revealed.
+        if (inline.closest(".reveal.visible")) watchCover(inline);
+      } catch (error) {
+        // Keep the plain <img> cover.
+      }
+    }
+
+    /* ============================================================
+       Copy email
+       ------------------------------------------------------------
+       Email buttons still open the mail app (mailto) and also copy
+       the address, showing a short "email copied" note.
+       ============================================================ */
+    const copyStatus = document.createElement("p");
+    copyStatus.className = "sr-only";
+    copyStatus.setAttribute("aria-live", "polite");
+    document.body.appendChild(copyStatus);
+
+    document.querySelectorAll("[data-copy-email]").forEach((button) => {
+      button.addEventListener("click", async () => {
+        try {
+          await navigator.clipboard.writeText(button.dataset.copyEmail);
+        } catch (error) {
+          return; // Clipboard blocked — the mailto link still works.
+        }
+        button.classList.remove("copied");
+        void button.offsetWidth; // restart the note animation
+        button.classList.add("copied");
+        copyStatus.textContent = "Email address copied to clipboard";
+        clearTimeout(button.copiedTimer);
+        button.copiedTimer = setTimeout(() => {
+          button.classList.remove("copied");
+          copyStatus.textContent = "";
+        }, 1800);
+      });
+    });
 
     const grid = document.getElementById("projects-grid");
     PROJECTS.forEach((project) => grid.appendChild(buildCard(project)));
@@ -1370,6 +1637,7 @@
 
     function showEl(el) {
       el.classList.add("visible");
+      el.querySelectorAll(".cover-anim").forEach(watchCover);
       const heading = el.querySelector("[data-typewriter-scroll]");
       if (heading && typewriterParts.has(heading)) {
         // Start once the section has mostly faded in, and type slowly enough

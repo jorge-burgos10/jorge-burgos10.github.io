@@ -20,6 +20,21 @@
   <meta property="og:image" content="https://jorgeburgos.me/images/og.png" />
   <meta name="twitter:card" content="summary_large_image" />
 
+  <!-- Draw the "jb." logo once per browser session (skipped for reduced motion) -->
+  <script>
+    try {
+      if (
+        !sessionStorage.getItem("logoAnimated") &&
+        !window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      ) {
+        document.documentElement.classList.add("logo-intro");
+        sessionStorage.setItem("logoAnimated", "1");
+      }
+    } catch (error) {
+      // Storage unavailable — show the logo without the animation.
+    }
+  </script>
+
   <!-- Google Fonts: JetBrains Mono for headings/code, Inter for body text -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -559,6 +574,56 @@
       display: inline-block;
       padding: 0.25rem 0;
     }
+
+    /* ============================================================
+       "jb." logo — strokes draw in, then the dots pop (first visit)
+       ============================================================ */
+    .nav-name svg {
+      display: block;
+      height: 1.75rem;
+      width: auto;
+      overflow: visible;
+    }
+
+    html.logo-intro .logo-stroke {
+      stroke-dasharray: 1;
+      stroke-dashoffset: 1;
+      animation: logo-draw 0.45s cubic-bezier(0.65, 0, 0.35, 1) var(--d) forwards;
+    }
+
+    html.logo-intro .logo-dot {
+      opacity: 0;
+      transform: scale(0);
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: logo-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) var(--d) forwards;
+    }
+
+    @keyframes logo-draw {
+      to { stroke-dashoffset: 0; }
+    }
+
+    @keyframes logo-pop {
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    /* ============================================================
+       Buttons — small press feedback
+       ============================================================ */
+    .btn {
+      display: inline-block;
+      transition: border-color 0.2s ease, background 0.2s ease, transform 0.1s ease;
+    }
+
+    .btn:active {
+      transform: translateY(1px) scale(0.98);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .btn:active {
+        transform: none;
+      }
+    }
   </style>
 </head>
 
@@ -570,7 +635,7 @@
        ============================================================ -->
   <nav class="nav">
     <div class="nav-inner">
-      <a href="index.html" class="nav-name" aria-label="Jorge Burgos — home"><img src="images/logo.svg" alt="" width="28" height="28" /></a>
+      <a href="index.html" class="nav-name" aria-label="Jorge Burgos — home"><svg class="nav-logo" viewBox="0 0 64 64" width="28" height="28" aria-hidden="true" focusable="false"><g fill="none" stroke="#e2e8f0" stroke-width="7"><path class="logo-stroke" pathLength="1" style="--d: 0.1s" d="M17 23.5V48Q17 57 8.5 57"/><path class="logo-stroke" pathLength="1" style="--d: 0.3s" d="M28 10V49.5"/><circle class="logo-stroke" pathLength="1" style="--d: 0.5s" cx="37.5" cy="36.5" r="9.5"/></g><circle class="logo-dot" style="--d: 0.75s" cx="17" cy="13.5" r="4" fill="#e2e8f0"/><circle class="logo-dot" style="--d: 1.05s" cx="57" cy="45.5" r="4" fill="#56b6c2"/></svg></a>
       <a href="index.html#projects" class="nav-back">← back to projects</a>
     </div>
   </nav>
@@ -584,14 +649,14 @@
       <h1 data-typewriter>Car Tracking System</h1>
       <p class="subtitle">
         A full-stack geospatial fleet platform that tracks vehicles, trips, GPS
-        pings, road segments, and parking zones — combining a FastAPI REST API,
+        pings, road segments, and parking zones. It combines a FastAPI REST API,
         an ETL pipeline into PostgreSQL/PostGIS, a Streamlit web app with live
         maps and charts, and an in-app AI Assistant.
       </p>
       <div class="hero-facts">
-        <span>ICOM 5016 — Database Systems</span>
+        <span>ICOM 5016 · Database Systems</span>
         <span>Team: 3 Neuronas</span>
-        <span>My role: Full Stack.    </span>
+        <span>My role: Full Stack</span>
         <span>Spring 2026</span>
       </div>
       <div class="hero-links">
@@ -713,7 +778,7 @@
       <div class="shot">
         <h3><span class="step">03.</span>Breadcrumb route</h3>
         <p>
-          Selecting a vehicle and a time range reconstructs its breadcrumb route —
+          Selecting a vehicle and a time range reconstructs its breadcrumb route:
           the path built from its location pings, drawn as a PostGIS LineString
           with start/end markers and the matching trip IDs.
         </p>
@@ -738,8 +803,8 @@
         <h3><span class="step">05.</span>CRUD management</h3>
         <p>
           Each entity has full create / update / delete forms wired to the REST
-          API — here, adding a new road segment from coordinates, or editing and
-          deleting an existing one, with validation throughout.
+          API, with validation throughout. Here, a new road segment is added from
+          coordinates, and an existing one is edited or deleted.
         </p>
         <figure class="figure">
           <img src="images/car-tracking/management.webp" width="2144" height="2301" alt="Forms to add, update, and delete a road segment" loading="lazy" />
@@ -749,8 +814,8 @@
       <div class="shot">
         <h3><span class="step">06.</span>Statistics &amp; charts</h3>
         <p>
-          The dashboard visualizes fleet activity — such as location pings per day
-          over a selected range — using Plotly charts backed by aggregate queries
+          The dashboard visualizes fleet activity, such as location pings per day
+          over a selected range, using Plotly charts backed by aggregate queries
           from the <code>/stats</code> endpoints.
         </p>
         <figure class="figure">
@@ -812,7 +877,7 @@
         </li>
         <li>
           <strong>Pages Layer.</strong> I built the Streamlit
-          <code>pages/</code> — the views that consume the REST API: the map
+          <code>pages/</code>, the views that consume the REST API: the map
           dashboard, entity management forms, statistics, and the AI Assistant page.
         </li>
         <li>
@@ -827,7 +892,7 @@
         </li>
         <li>
           <strong>AI Assistant.</strong> Built the in-app chat page that answers
-          natural-language questions about the fleet using live API data —
+          natural-language questions about the fleet using live API data,
           integrating the Cursor SDK with an MCP server that exposes the REST
           endpoints as tools, managing conversation context, and scoping answers
           to project topics only.
