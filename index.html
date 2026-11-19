@@ -994,6 +994,55 @@
       white-space: nowrap;
       border: 0;
     }
+
+    /* ============================================================
+       Polish — text wrapping, staggered entrances, hover elevation
+       ============================================================ */
+    /* No lone last words in headings; nicer paragraph rag */
+    h1, h2, h3 {
+      text-wrap: balance;
+    }
+
+    p, li {
+      text-wrap: pretty;
+    }
+
+    /* Items inside a section enter one after another the first time it
+       appears. "backwards" fill only holds the hidden start state during
+       the delay, so hover transforms keep working afterwards. */
+    @keyframes stagger-in {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      .js .visible .stagger-item {
+        animation: stagger-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+        animation-delay: calc(0.12s + var(--i, 0) * 0.07s);
+      }
+    }
+
+    /* Cards lift with a soft shadow (border keeps the structure) */
+    .project-card {
+      transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .project-card:hover {
+      box-shadow:
+        0 1px 2px rgba(0, 0, 0, 0.3),
+        0 14px 32px -14px rgba(0, 0, 0, 0.75);
+    }
+
+    .skills-group {
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .skills-group:hover {
+      border-color: #2f3a48;
+      box-shadow: 0 10px 24px -14px rgba(0, 0, 0, 0.7);
+    }
   </style>
 </head>
 
@@ -1531,6 +1580,16 @@
 
     const grid = document.getElementById("projects-grid");
     PROJECTS.forEach((project) => grid.appendChild(buildCard(project)));
+
+    // Mark the items that enter one after another inside each section.
+    document.querySelectorAll(".reveal").forEach((section) => {
+      section
+        .querySelectorAll(".project-card, .skills-group")
+        .forEach((item, index) => {
+          item.classList.add("stagger-item");
+          item.style.setProperty("--i", index);
+        });
+    });
 
     /* ============================================================
        Typewriter intro

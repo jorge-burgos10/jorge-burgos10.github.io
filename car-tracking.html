@@ -624,6 +624,52 @@
         transform: none;
       }
     }
+
+    /* ============================================================
+       Polish — text wrapping, staggered entrances, hover elevation
+       ============================================================ */
+    /* No lone last words in headings; nicer paragraph rag */
+    h1, h2, h3 {
+      text-wrap: balance;
+    }
+
+    p, li {
+      text-wrap: pretty;
+    }
+
+    /* Items inside a section enter one after another the first time it
+       appears. "backwards" fill only holds the hidden start state during
+       the delay, so hover transforms keep working afterwards. */
+    @keyframes stagger-in {
+      from {
+        opacity: 0;
+        transform: translateY(12px);
+      }
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      .visible .stagger-item {
+        animation: stagger-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+        animation-delay: calc(0.12s + var(--i, 0) * 0.07s);
+      }
+    }
+
+    .stack-group {
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .stack-group:hover {
+      border-color: #2f3a48;
+      box-shadow: 0 10px 24px -14px rgba(0, 0, 0, 0.7);
+    }
+
+    .figure {
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .figure:not(.placeholder):hover {
+      box-shadow: 0 16px 36px -18px rgba(0, 0, 0, 0.8);
+    }
   </style>
 </head>
 
@@ -1069,6 +1115,12 @@
     /* ============================================================
        Subtle fade-in on scroll (+ typed section headings)
        ============================================================ */
+    // Tech-stack groups enter one after another when their section appears.
+    document.querySelectorAll(".stack-group").forEach((group, index) => {
+      group.classList.add("stagger-item");
+      group.style.setProperty("--i", index);
+    });
+
     const fadeEls = document.querySelectorAll(".fade-in");
     const reveal = (el) => {
       el.classList.add("visible");
