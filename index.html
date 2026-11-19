@@ -1043,6 +1043,122 @@
       border-color: #2f3a48;
       box-shadow: 0 10px 24px -14px rgba(0, 0, 0, 0.7);
     }
+
+    /* ============================================================
+       Shared cover between the project card and the case study:
+       on navigation the cover morphs from one page to the other.
+       ============================================================ */
+    ::view-transition-group(car-tracking-cover) {
+      animation-duration: 0.5s;
+      animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    ::view-transition-old(car-tracking-cover),
+    ::view-transition-new(car-tracking-cover) {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* ============================================================
+       Hero pings — now and then a GPS "ping" lights up on a grid
+       intersection, like a vehicle reporting its position.
+       ============================================================ */
+    .hero-pings {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      width: 100vw;
+      transform: translateX(-50%);
+      z-index: -1;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .hero-ping {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      margin: -3px 0 0 -3px;
+      border-radius: 50%;
+      background: var(--accent);
+      opacity: 0;
+      animation: hero-ping 2.8s ease-out forwards;
+    }
+
+    .hero-ping::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 1px solid var(--accent);
+      animation: hero-ping-ring 2.8s ease-out forwards;
+    }
+
+    @keyframes hero-ping {
+      0% { opacity: 0; transform: scale(0.4); }
+      12% { opacity: 0.85; transform: scale(1); }
+      65% { opacity: 0.55; }
+      100% { opacity: 0; }
+    }
+
+    @keyframes hero-ping-ring {
+      0% { transform: scale(1); opacity: 0.7; }
+      70%, 100% { transform: scale(7); opacity: 0; }
+    }
+
+    /* ============================================================
+       SCOPE illustration in the Experience card
+       ============================================================ */
+    .experience-art {
+      aspect-ratio: 800 / 420;
+      margin-bottom: 0.4rem;
+    }
+
+    /* The drawing leaves the bottom corner empty, so no dark fade is needed */
+    .experience-art::after {
+      display: none;
+    }
+
+    .experience-art .scope-svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .scope-readout {
+      position: absolute;
+      z-index: 1;
+      top: 0.8rem;
+      left: 0.9rem;
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      background: rgba(13, 17, 23, 0.7);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.15rem 0.45rem;
+    }
+
+    .scope-readout b {
+      display: inline-block;
+      min-width: 1ch;
+      color: var(--accent);
+      font-weight: 500;
+      font-variant-numeric: tabular-nums;
+    }
+
+    @media (max-width: 640px) {
+      .experience-art {
+        aspect-ratio: 16 / 10;
+      }
+
+      /* Diagram labels get too small to read on phones */
+      .scope-label {
+        display: none;
+      }
+    }
   </style>
 </head>
 
@@ -1100,6 +1216,13 @@
     <section id="experience" class="reveal">
       <h2 class="section-title" data-typewriter-scroll><span class="num">01</span> <span class="label">experience</span></h2>
       <article class="project-card experience-card">
+        <div class="project-thumb experience-art">
+          <!-- SCOPE illustration (generated): gateway, Lambda cluster, S3, RDS -->
+          <svg class="scope-svg" viewBox="0 0 800 420" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Diagram of the SCOPE serverless backend: requests pass an IAM-secured API Gateway to about 40 Lambda functions, which store photos in S3, where a lifecycle rule deletes them seconds after processing, and data in RDS PostgreSQL."><rect width="800" height="420" fill="#0d1117"/><defs><pattern id="scope-dots" width="22" height="22" patternUnits="userSpaceOnUse"><circle cx="11" cy="11" r="1" fill="#1a222c"/></pattern></defs><rect width="800" height="420" fill="url(#scope-dots)"/><polygon points="134.8,189.6 502.8,402.1 502.8,389.6 134.8,177.1" fill="#121821" stroke="#232b36" stroke-width="1" stroke-linejoin="round"/><polygon points="665.2,308.3 502.8,402.1 502.8,389.6 665.2,295.8" fill="#0d1218" stroke="#232b36" stroke-width="1" stroke-linejoin="round"/><polygon points="297.2,83.3 665.2,295.8 502.8,389.6 134.8,177.1" fill="#18202a" stroke="#232b36" stroke-width="1" stroke-linejoin="round"/><line x1="156.4" y1="190.8" x2="156.4" y2="194.6" stroke="#232b36" stroke-width="1"/><line x1="178.1" y1="203.3" x2="178.1" y2="207.1" stroke="#232b36" stroke-width="1"/><line x1="199.7" y1="215.8" x2="199.7" y2="219.6" stroke="#232b36" stroke-width="1"/><line x1="221.4" y1="228.3" x2="221.4" y2="232.1" stroke="#232b36" stroke-width="1"/><line x1="243.0" y1="240.8" x2="243.0" y2="244.6" stroke="#232b36" stroke-width="1"/><line x1="264.7" y1="253.3" x2="264.7" y2="257.1" stroke="#232b36" stroke-width="1"/><line x1="286.3" y1="265.8" x2="286.3" y2="269.6" stroke="#232b36" stroke-width="1"/><line x1="308.0" y1="278.3" x2="308.0" y2="282.1" stroke="#232b36" stroke-width="1"/><line x1="329.6" y1="290.8" x2="329.6" y2="294.6" stroke="#232b36" stroke-width="1"/><line x1="351.3" y1="303.3" x2="351.3" y2="307.1" stroke="#232b36" stroke-width="1"/><line x1="372.9" y1="315.8" x2="372.9" y2="319.6" stroke="#232b36" stroke-width="1"/><line x1="394.6" y1="328.3" x2="394.6" y2="332.1" stroke="#232b36" stroke-width="1"/><line x1="416.2" y1="340.8" x2="416.2" y2="344.6" stroke="#232b36" stroke-width="1"/><line x1="437.9" y1="353.3" x2="437.9" y2="357.1" stroke="#232b36" stroke-width="1"/><line x1="459.5" y1="365.8" x2="459.5" y2="369.6" stroke="#232b36" stroke-width="1"/><line x1="481.2" y1="378.3" x2="481.2" y2="382.1" stroke="#232b36" stroke-width="1"/><path d="M221.4 129.8 L272.3 159.2 L337.2 196.7" fill="none" stroke="#3a4756" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><path d="M221.4 129.8 L272.3 159.2 L337.2 196.7" fill="none" stroke="#111820" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M442.2 227.3 L484.4 251.7 L496.3 244.8 L523.4 260.4" fill="none" stroke="#3a4756" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><path d="M442.2 227.3 L484.4 251.7 L496.3 244.8 L523.4 260.4" fill="none" stroke="#111820" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M388.1 258.6 L430.3 282.9 L418.4 289.8 L447.6 306.7" fill="none" stroke="#3a4756" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><path d="M388.1 258.6 L430.3 282.9 L418.4 289.8 L447.6 306.7" fill="none" stroke="#111820" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><circle r="3.6" fill="#56b6c2"><animateMotion dur="2.4s" begin="0s" repeatCount="indefinite" path="M221.4 126.8 L272.3 156.2 L337.2 193.7"/><animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.85;1" dur="2.4s" begin="0s" repeatCount="indefinite"/></circle><circle r="3.6" fill="#56b6c2"><animateMotion dur="2.4s" begin="0.8s" repeatCount="indefinite" path="M221.4 126.8 L272.3 156.2 L337.2 193.7"/><animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.85;1" dur="2.4s" begin="0.8s" repeatCount="indefinite"/></circle><circle r="3.6" fill="#56b6c2"><animateMotion dur="2.4s" begin="1.6s" repeatCount="indefinite" path="M221.4 126.8 L272.3 156.2 L337.2 193.7"/><animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.85;1" dur="2.4s" begin="1.6s" repeatCount="indefinite"/></circle><circle r="3.2" fill="#56b6c2"><animateMotion dur="2.4s" begin="0.6s" repeatCount="indefinite" path="M388.1 255.6 L430.3 279.9 L418.4 286.8 L447.6 303.7"/><animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.85;1" dur="2.4s" begin="0.6s" repeatCount="indefinite"/></circle><circle r="3.2" fill="#56b6c2"><animateMotion dur="2.4s" begin="1.8s" repeatCount="indefinite" path="M388.1 255.6 L430.3 279.9 L418.4 286.8 L447.6 303.7"/><animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.85;1" dur="2.4s" begin="1.8s" repeatCount="indefinite"/></circle><g id="scope-photo-packet"><rect x="-6" y="-5" width="12" height="10" rx="1.5" fill="#e2e8f0" stroke="#56b6c2" stroke-width="1.2"/><path d="M-4 3 L-1 0 L1 2 L3 -1 L5 3 Z" fill="#56b6c2"/><animateMotion dur="4.8s" repeatCount="indefinite" path="M442.2 222.3 L484.4 246.7 L496.3 239.8 L523.4 255.4" keyPoints="0;1;1" keyTimes="0;0.5;1" calcMode="linear"/><animate attributeName="opacity" values="0;1;1;0;0" keyTimes="0;0.05;0.46;0.5;1" dur="4.8s" repeatCount="indefinite"/></g><polygon points="280.9,155.2 293.9,162.7 293.9,115.2 280.9,107.7" fill="#212a35" stroke="#3a4756" stroke-width="1" stroke-linejoin="round"/><polygon points="306.9,155.2 293.9,162.7 293.9,115.2 306.9,107.7" fill="#19212a" stroke="#3a4756" stroke-width="1" stroke-linejoin="round"/><polygon points="293.9,100.2 306.9,107.7 293.9,115.2 280.9,107.7" fill="#2a3542" stroke="#3a4756" stroke-width="1" stroke-linejoin="round"/><polygon points="246.3,175.2 259.3,182.7 259.3,135.2 246.3,127.7" fill="#212a35" stroke="#3a4756" stroke-width="1" stroke-linejoin="round"/><polygon points="272.3,175.2 259.3,182.7 259.3,135.2 272.3,127.7" fill="#19212a" stroke="#3a4756" stroke-width="1" stroke-linejoin="round"/><polygon points="259.3,120.2 272.3,127.7 259.3,135.2 246.3,127.7" fill="#2a3542" stroke="#3a4756" stroke-width="1" stroke-linejoin="round"/><polygon points="242.0,127.7 259.3,137.7 259.3,123.9 242.0,113.9" fill="#212a35" stroke="#3a4756" stroke-width="1" stroke-linejoin="round"/><polygon points="311.2,107.7 259.3,137.7 259.3,123.9 311.2,93.9" fill="#19212a" stroke="#3a4756" stroke-width="1" stroke-linejoin="round"/><polygon points="293.9,83.9 311.2,93.9 259.3,123.9 242.0,113.9" fill="#2a3542" stroke="#3a4756" stroke-width="1" stroke-linejoin="round"/><g transform="translate(285.3 115.9)"><path d="M-4.5 -2 V-5 a4.5 4.5 0 0 1 9 0 V-2" fill="none" stroke="#56b6c2" stroke-width="2"/><rect x="-6.5" y="-2.5" width="13" height="10" rx="2" fill="#56b6c2"/><circle cx="0" cy="2" r="1.6" fill="#0d1117"/></g><polygon points="357.8,193.3 377.3,204.6 377.3,182.1 357.8,170.8" fill="#212a35" stroke="#3a4756" stroke-width="1" stroke-linejoin="round"/><polygon points="396.8,193.3 377.3,204.6 377.3,182.1 396.8,170.8" fill="#19212a" stroke="#3a4756" stroke-width="1" stroke-linejoin="round"/><polygon points="377.3,159.6 396.8,170.8 377.3,182.1 357.8,170.8" fill="#2a3542" stroke="#3a4756" stroke-width="1" stroke-linejoin="round"><animate attributeName="fill" values="#2a3542;#2b5f66;#2a3542;#2a3542" keyTimes="0;0.15;0.45;1" dur="2.4s" begin="0.0s" repeatCount="indefinite"/></polygon><text transform="matrix(0.866 0.500 -0.866 0.500 377.3 170.8)" font-family="JetBrains Mono, monospace" font-size="15" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#56b6c2" opacity="0.85">λ</text><polygon points="384.8,208.9 404.3,220.2 404.3,197.7 384.8,186.4" fill="#212a35" stroke="#3a4756" stroke-width="1" stroke-linejoin="round"/><polygon points="423.8,208.9 404.3,220.2 404.3,197.7 423.8,186.4" fill="#19212a" stroke="#3a4756" stroke-width="1" stroke-linejoin="round"/><polygon points="404.3,175.2 423.8,186.4 404.3,197.7 384.8,186.4" fill="#2a3542" stroke="#3a4756" stroke-width="1" stroke-linejoin="round"><animate attributeName="fill" values="#2a3542;#2b5f66;#2a3542;#2a3542" keyTimes="0;0.15;0.45;1" dur="2.4s" begin="0.9s" repeatCount="indefinite"/></polygon><text transform="matrix(0.866 0.500 -0.866 0.500 404.3 186.4)" font-family="JetBrains Mono, monospace" font-size="15" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#56b6c2" opacity="0.85">λ</text><polygon points="411.9,224.6 431.4,235.8 431.4,213.3 411.9,202.1" fill="#212a35" stroke="#3a4756" stroke-width="1" stroke-linejoin="round"/><polygon points="450.9,224.6 431.4,235.8 431.4,213.3 450.9,202.1" fill="#19212a" stroke="#3a4756" stroke-width="1" stroke-linejoin="round"/><polygon points="431.4,190.8 450.9,202.1 431.4,213.3 411.9,202.1" fill="#2a3542" stroke="#3a4756" stroke-width="1" stroke-linejoin="round"><animate attributeName="fill" values="#2a3542;#2b5f66;#2a3542;#2a3542" keyTimes="0;0.15;0.45;1" dur="2.4s" begin="1.7s" repeatCount="indefinite"/></polygon><text transform="matrix(0.866 0.500 -0.866 0.500 431.4 202.1)" font-family="JetBrains Mono, monospace" font-size="15" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#56b6c2" opacity="0.85">λ</text><polygon points="330.7,208.9 350.2,220.2 350.2,197.7 330.7,186.4" fill="#212a35" stroke="#3a4756" stroke-width="1" stroke-linejoin="round"/><polygon points="369.7,208.9 350.2,220.2 350.2,197.7 369.7,186.4" fill="#19212a" stroke="#3a4756" stroke-width="1" stroke-linejoin="round"/><polygon points="350.2,175.2 369.7,186.4 350.2,197.7 330.7,186.4" fill="#2a3542" stroke="#3a4756" stroke-width="1" stroke-linejoin="round"><animate attributeName="fill" values="#2a3542;#2b5f66;#2a3542;#2a3542" keyTimes="0;0.15;0.45;1" dur="2.4s" begin="0.4s" repeatCount="indefinite"/></polygon><text transform="matrix(0.866 0.500 -0.866 0.500 350.2 186.4)" font-family="JetBrains Mono, monospace" font-size="15" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#56b6c2" opacity="0.85">λ</text><polygon points="357.8,224.6 377.3,235.8 377.3,213.3 357.8,202.1" fill="#212a35" stroke="#3a4756" stroke-width="1" stroke-linejoin="round"/><polygon points="396.8,224.6 377.3,235.8 377.3,213.3 396.8,202.1" fill="#19212a" stroke="#3a4756" stroke-width="1" stroke-linejoin="round"/><polygon points="377.3,190.8 396.8,202.1 377.3,213.3 357.8,202.1" fill="#2a3542" stroke="#3a4756" stroke-width="1" stroke-linejoin="round"><animate attributeName="fill" values="#2a3542;#2b5f66;#2a3542;#2a3542" keyTimes="0;0.15;0.45;1" dur="2.4s" begin="1.3s" repeatCount="indefinite"/></polygon><text transform="matrix(0.866 0.500 -0.866 0.500 377.3 202.1)" font-family="JetBrains Mono, monospace" font-size="15" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#56b6c2" opacity="0.85">λ</text><polygon points="384.8,240.2 404.3,251.4 404.3,228.9 384.8,217.7" fill="#212a35" stroke="#3a4756" stroke-width="1" stroke-linejoin="round"/><polygon points="423.8,240.2 404.3,251.4 404.3,228.9 423.8,217.7" fill="#19212a" stroke="#3a4756" stroke-width="1" stroke-linejoin="round"/><polygon points="404.3,206.4 423.8,217.7 404.3,228.9 384.8,217.7" fill="#2a3542" stroke="#3a4756" stroke-width="1" stroke-linejoin="round"><animate attributeName="fill" values="#2a3542;#2b5f66;#2a3542;#2a3542" keyTimes="0;0.15;0.45;1" dur="2.4s" begin="2.1s" repeatCount="indefinite"/></polygon><text transform="matrix(0.866 0.500 -0.866 0.500 404.3 217.7)" font-family="JetBrains Mono, monospace" font-size="15" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#56b6c2" opacity="0.85">λ</text><polygon points="303.7,224.6 323.1,235.8 323.1,213.3 303.7,202.1" fill="#212a35" stroke="#3a4756" stroke-width="1" stroke-linejoin="round"/><polygon points="342.6,224.6 323.1,235.8 323.1,213.3 342.6,202.1" fill="#19212a" stroke="#3a4756" stroke-width="1" stroke-linejoin="round"/><polygon points="323.1,190.8 342.6,202.1 323.1,213.3 303.7,202.1" fill="#2a3542" stroke="#3a4756" stroke-width="1" stroke-linejoin="round"><animate attributeName="fill" values="#2a3542;#2b5f66;#2a3542;#2a3542" keyTimes="0;0.15;0.45;1" dur="2.4s" begin="0.7s" repeatCount="indefinite"/></polygon><text transform="matrix(0.866 0.500 -0.866 0.500 323.1 202.1)" font-family="JetBrains Mono, monospace" font-size="15" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#56b6c2" opacity="0.85">λ</text><polygon points="330.7,240.2 350.2,251.4 350.2,228.9 330.7,217.7" fill="#212a35" stroke="#3a4756" stroke-width="1" stroke-linejoin="round"/><polygon points="369.7,240.2 350.2,251.4 350.2,228.9 369.7,217.7" fill="#19212a" stroke="#3a4756" stroke-width="1" stroke-linejoin="round"/><polygon points="350.2,206.4 369.7,217.7 350.2,228.9 330.7,217.7" fill="#2a3542" stroke="#3a4756" stroke-width="1" stroke-linejoin="round"><animate attributeName="fill" values="#2a3542;#2b5f66;#2a3542;#2a3542" keyTimes="0;0.15;0.45;1" dur="2.4s" begin="1.9s" repeatCount="indefinite"/></polygon><text transform="matrix(0.866 0.500 -0.866 0.500 350.2 217.7)" font-family="JetBrains Mono, monospace" font-size="15" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#56b6c2" opacity="0.85">λ</text><polygon points="357.8,255.8 377.3,267.1 377.3,244.6 357.8,233.3" fill="#212a35" stroke="#3a4756" stroke-width="1" stroke-linejoin="round"/><polygon points="396.8,255.8 377.3,267.1 377.3,244.6 396.8,233.3" fill="#19212a" stroke="#3a4756" stroke-width="1" stroke-linejoin="round"/><polygon points="377.3,222.1 396.8,233.3 377.3,244.6 357.8,233.3" fill="#2a3542" stroke="#3a4756" stroke-width="1" stroke-linejoin="round"><animate attributeName="fill" values="#2a3542;#2b5f66;#2a3542;#2a3542" keyTimes="0;0.15;0.45;1" dur="2.4s" begin="1.1s" repeatCount="indefinite"/></polygon><text transform="matrix(0.866 0.500 -0.866 0.500 377.3 233.3)" font-family="JetBrains Mono, monospace" font-size="15" font-weight="700" text-anchor="middle" dominant-baseline="central" fill="#56b6c2" opacity="0.85">λ</text><path d="M514.5999999999999 240.8 L514.5999999999999 278.3 A33.7 19.4 0 0 0 582.0 278.3 L582.0 240.8 Z" fill="#212a35" stroke="#3a4756" stroke-width="1"/><ellipse cx="548.3" cy="240.8" rx="33.7" ry="19.4" fill="#2a3542" stroke="#3a4756" stroke-width="1"/><ellipse cx="548.3" cy="240.8" rx="26.3" ry="15.1" fill="#0d1117" stroke="#3a4756" stroke-width="1"/><g transform="translate(548.3 238.8)"><g><rect x="-8" y="-6" width="16" height="12" rx="2" fill="#e2e8f0" stroke="#56b6c2" stroke-width="1.2"/><path d="M-5.5 4 L-1.5 -0.5 L1 2 L3.5 -1.5 L6 4 Z" fill="#56b6c2"/><animate attributeName="opacity" values="0;0;1;1;0;0" keyTimes="0;0.5;0.53;0.78;0.9;1" dur="4.8s" repeatCount="indefinite"/><animateTransform attributeName="transform" type="translate" values="0 -6;0 -6;0 0;0 2;0 9;0 9" keyTimes="0;0.5;0.56;0.78;0.9;1" dur="4.8s" repeatCount="indefinite"/></g></g><ellipse cx="548.3" cy="240.8" rx="33.7" ry="19.4" fill="none" stroke="#56b6c2" stroke-width="2" opacity="0"><animate attributeName="opacity" values="0;0;0.9;0;0" keyTimes="0;0.8;0.86;0.95;1" dur="4.8s" repeatCount="indefinite"/></ellipse><path d="M439.79999999999995 312.8 L439.79999999999995 323.3 A30.6 17.7 0 0 0 501.0 323.3 L501.0 312.8 Z" fill="#212a35" stroke="#3a4756" stroke-width="1"/><ellipse cx="470.4" cy="312.8" rx="30.6" ry="17.7" fill="#2a3542" stroke="#3a4756" stroke-width="1"/><path d="M439.79999999999995 300.3 L439.79999999999995 310.8 A30.6 17.7 0 0 0 501.0 310.8 L501.0 300.3 Z" fill="#212a35" stroke="#3a4756" stroke-width="1"/><ellipse cx="470.4" cy="300.3" rx="30.6" ry="17.7" fill="#2a3542" stroke="#3a4756" stroke-width="1"/><path d="M439.79999999999995 287.8 L439.79999999999995 298.3 A30.6 17.7 0 0 0 501.0 298.3 L501.0 287.8 Z" fill="#212a35" stroke="#3a4756" stroke-width="1"/><ellipse cx="470.4" cy="287.8" rx="30.6" ry="17.7" fill="#2a3542" stroke="#56b6c2" stroke-width="1"/><g class="scope-label"><line x1="302.6" y1="88.9" x2="282.6" y2="58.900000000000006" stroke="#3a4756" stroke-width="1" stroke-dasharray="2 3"/><circle cx="302.6" cy="88.9" r="2" fill="#3a4756"/><text x="282.6" y="54.900000000000006" font-family="JetBrains Mono, monospace" font-size="12.5" fill="#94a3b3" text-anchor="middle">api gateway · iam</text></g><g class="scope-label"><line x1="414.1" y1="180.8" x2="414.1" y2="140.8" stroke="#3a4756" stroke-width="1" stroke-dasharray="2 3"/><circle cx="414.1" cy="180.8" r="2" fill="#3a4756"/><text x="414.1" y="136.8" font-family="JetBrains Mono, monospace" font-size="12.5" fill="#94a3b3" text-anchor="middle">lambda × 40</text></g><g class="scope-label"><line x1="572.1" y1="227.1" x2="602.1" y2="201.1" stroke="#3a4756" stroke-width="1" stroke-dasharray="2 3"/><circle cx="572.1" cy="227.1" r="2" fill="#3a4756"/><text x="602.1" y="197.1" font-family="JetBrains Mono, monospace" font-size="12.5" fill="#94a3b3" text-anchor="middle">s3 · lifecycle</text></g><g class="scope-label"><line x1="489.9" y1="297.1" x2="575.9" y2="307.1" stroke="#3a4756" stroke-width="1" stroke-dasharray="2 3"/><circle cx="489.9" cy="297.1" r="2" fill="#3a4756"/><text x="575.9" y="303.1" font-family="JetBrains Mono, monospace" font-size="12.5" fill="#94a3b3" text-anchor="middle">rds postgresql</text></g></svg>
+          <span class="cover-note">serverless · AWS</span>
+          <span class="scope-readout" aria-hidden="true">photos stored: <b>0</b></span>
+          <span class="cover-title">scope</span>
+        </div>
         <div class="project-head">
           <h3>Undergraduate Research Assistant</h3>
           <span class="project-status">2026–present</span>
@@ -1431,6 +1554,7 @@
         const thumb = document.createElement("a");
         thumb.className = "project-thumb";
         thumb.href = project.detailUrl || project.url;
+        if (project.detailUrl) thumb.style.viewTransitionName = `${project.coverTitle}-cover`;
         if (!project.detailUrl) {
           thumb.target = "_blank";
           thumb.rel = "noopener noreferrer";
@@ -1448,7 +1572,7 @@
         img.height = 500;
         img.loading = "lazy";
         thumb.appendChild(img);
-        if (project.image.endsWith(".svg")) inlineCover(img, project.coverTitle);
+        if (project.image.endsWith(".svg") && !cameFromCaseStudy) inlineCover(img, project.coverTitle);
 
         if (project.coverNote) {
           const note = document.createElement("span");
@@ -1482,6 +1606,16 @@
        swapped for the same SVG inline so its lines can draw themselves
        the first time the card scrolls into view.
        ============================================================ */
+    // True when arriving from a case study page (link or back button).
+    const cameFromCaseStudy = (() => {
+      try {
+        const from = new URL(document.referrer);
+        return from.origin === location.origin && /car-tracking\.html$/.test(from.pathname);
+      } catch (error) {
+        return false;
+      }
+    })();
+
     const coverObserver =
       "IntersectionObserver" in window
         ? new IntersectionObserver(
@@ -1577,6 +1711,41 @@
         }, 1800);
       });
     });
+
+    /* ============================================================
+       SCOPE illustration
+       ------------------------------------------------------------
+       The readout follows the photo animation (a photo is stored for a
+       moment, then the lifecycle rule deletes it). The animation pauses
+       while off screen and stays still for reduced motion.
+       ============================================================ */
+    (() => {
+      const svg = document.querySelector(".scope-svg");
+      const count = document.querySelector(".scope-readout b");
+      if (!svg || !count || typeof svg.pauseAnimations !== "function") return;
+
+      const CYCLE = 4.8; // seconds, same as the photo animation
+      const update = () => {
+        const t = svg.getCurrentTime() % CYCLE;
+        const stored = t >= 2.55 && t < 4.3 ? "1" : "0";
+        if (count.textContent !== stored) count.textContent = stored;
+      };
+
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        svg.pauseAnimations();
+        svg.setCurrentTime(1.2);
+        update();
+        return;
+      }
+
+      if ("IntersectionObserver" in window) {
+        new IntersectionObserver(([entry]) => {
+          if (entry.isIntersecting) svg.unpauseAnimations();
+          else svg.pauseAnimations();
+        }).observe(svg);
+      }
+      setInterval(update, 100);
+    })();
 
     const grid = document.getElementById("projects-grid");
     PROJECTS.forEach((project) => grid.appendChild(buildCard(project)));
@@ -1748,10 +1917,79 @@
       });
     }
 
+    /* ============================================================
+       Hero pings
+       ------------------------------------------------------------
+       Every ~1.6 s a ping appears on a free grid intersection of the
+       hero backdrop (never on top of the text), only while the hero is
+       on screen and the tab is visible. Off for reduced motion.
+       ============================================================ */
+    function startHeroPings() {
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      const hero = document.querySelector(".hero");
+      if (!hero || hero.querySelector(".hero-pings")) return;
+
+      const GRID = 44; // same spacing as the hero grid
+      const layer = document.createElement("div");
+      layer.className = "hero-pings";
+      layer.setAttribute("aria-hidden", "true");
+      hero.prepend(layer);
+
+      let heroVisible = true;
+      if ("IntersectionObserver" in window) {
+        new IntersectionObserver((entries) => {
+          heroVisible = entries[0].isIntersecting;
+        }).observe(hero);
+      }
+
+      const textBlocks = [...hero.children].filter((el) => el !== layer);
+
+      const spawn = () => {
+        if (document.hidden || !heroVisible) return;
+        if (layer.childElementCount >= 3) return;
+
+        const box = layer.getBoundingClientRect();
+        const blocks = textBlocks.map((el) => el.getBoundingClientRect());
+        const cols = Math.floor(box.width / GRID);
+        const rows = Math.floor(box.height / GRID);
+
+        for (let tries = 0; tries < 25; tries++) {
+          const x = (1 + Math.floor(Math.random() * (cols - 1))) * GRID;
+          const y = (1 + Math.floor(Math.random() * (rows - 1))) * GRID;
+
+          // Stay where the grid is visible (it fades out toward the edges).
+          const nx = (x / box.width - 0.35) / 0.6;
+          const ny = (y / box.height - 0.35) / 0.85;
+          if (nx * nx + ny * ny > 0.6) continue;
+
+          // Never under the text or buttons.
+          const px = box.left + x;
+          const py = box.top + y;
+          const pad = 18;
+          const overText = blocks.some(
+            (b) => px > b.left - pad && px < b.right + pad && py > b.top - pad && py < b.bottom + pad
+          );
+          if (overText) continue;
+
+          const ping = document.createElement("span");
+          ping.className = "hero-ping";
+          ping.style.left = `${x}px`;
+          ping.style.top = `${y}px`;
+          ping.addEventListener("animationend", () => ping.remove(), { once: true });
+          layer.appendChild(ping);
+          return;
+        }
+      };
+
+      setInterval(spawn, 1600);
+      spawn();
+    }
+
     // Shows the hero buttons and lets the sections below start appearing.
     function revealPage() {
       document.body.classList.add("intro-ready");
       startScrollEffects();
+      startHeroPings();
     }
 
     async function runIntroTypewriter() {
@@ -1805,6 +2043,13 @@
       const introName = document.querySelector(".hero h1");
       if (introName) introName.appendChild(createCursor());
       revealPage();
+      if (cameFromCaseStudy) {
+        revealEls.forEach(showEl);
+        // Land on the target section before the first paint, so the
+        // shared cover is on screen for the morph back.
+        const target = location.hash && document.querySelector(location.hash);
+        if (target) target.scrollIntoView({ block: "start", behavior: "instant" });
+      }
     } else {
       runIntroTypewriter();
     }
