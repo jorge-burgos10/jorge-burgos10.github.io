@@ -2130,7 +2130,7 @@
        ------------------------------------------------------------
        Hovering the logo (or reaching it with Tab) replays a short
        version of the drawing. A replay always finishes before the
-       next one can start. Not on touch screens or reduced motion.
+       next one can start. Not for touch taps or reduced motion.
        ============================================================ */
     (() => {
       const logo = document.querySelector(".nav-logo");
@@ -2144,7 +2144,6 @@
         setTimeout(() => root.classList.remove("logo-intro"), 1600);
       }
 
-      const canHover = window.matchMedia("(hover: hover)");
       const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
       let running = false;
 
@@ -2158,8 +2157,10 @@
         }, 800);
       };
 
-      link.addEventListener("mouseenter", () => {
-        if (canHover.matches) replay();
+      // Decide per event: touch-screen laptops report "no hover" even when a
+      // mouse is used, so check the pointer that actually entered.
+      link.addEventListener("pointerenter", (event) => {
+        if (event.pointerType === "mouse" || event.pointerType === "pen") replay();
       });
       link.addEventListener("focus", () => {
         if (link.matches(":focus-visible")) replay();
