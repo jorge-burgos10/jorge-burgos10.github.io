@@ -1167,6 +1167,31 @@
       max-width: 46rem;
       flex-grow: 0;
     }
+
+    /* ============================================================
+       Logo replay on hover / keyboard focus — a quicker redraw that
+       starts from a faint, partly drawn logo (never fully empty)
+       ============================================================ */
+    .nav-logo.logo-replay .logo-stroke {
+      stroke-dasharray: 1;
+      animation: logo-redraw 0.45s cubic-bezier(0.65, 0, 0.35, 1) calc(var(--d) * 0.5) both;
+    }
+
+    .nav-logo.logo-replay .logo-dot {
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: logo-repop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) calc(var(--d) * 0.5) both;
+    }
+
+    @keyframes logo-redraw {
+      from { stroke-dashoffset: 0.85; stroke-opacity: 0.35; }
+      to { stroke-dashoffset: 0; stroke-opacity: 1; }
+    }
+
+    @keyframes logo-repop {
+      from { transform: scale(0.4); }
+      to { transform: scale(1); }
+    }
   </style>
 </head>
 
@@ -2099,6 +2124,47 @@
       revealPage();
       revealEls.forEach(showEl);
     });
+
+    /* ============================================================
+       Logo replay
+       ------------------------------------------------------------
+       Hovering the logo (or reaching it with Tab) replays a short
+       version of the drawing. A replay always finishes before the
+       next one can start. Not on touch screens or reduced motion.
+       ============================================================ */
+    (() => {
+      const logo = document.querySelector(".nav-logo");
+      const link = logo && logo.closest("a");
+      if (!logo || !link) return;
+
+      const root = document.documentElement;
+      // Once the first-visit drawing has finished, drop its class so it can
+      // never restart when the replay class comes and goes.
+      if (root.classList.contains("logo-intro")) {
+        setTimeout(() => root.classList.remove("logo-intro"), 1600);
+      }
+
+      const canHover = window.matchMedia("(hover: hover)");
+      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+      let running = false;
+
+      const replay = () => {
+        if (running || reducedMotion.matches || root.classList.contains("logo-intro")) return;
+        running = true;
+        logo.classList.add("logo-replay");
+        setTimeout(() => {
+          logo.classList.remove("logo-replay");
+          running = false;
+        }, 800);
+      };
+
+      link.addEventListener("mouseenter", () => {
+        if (canHover.matches) replay();
+      });
+      link.addEventListener("focus", () => {
+        if (link.matches(":focus-visible")) replay();
+      });
+    })();
   </script>
 </body>
 </html>
