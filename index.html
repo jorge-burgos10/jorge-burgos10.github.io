@@ -18,7 +18,54 @@
   <meta property="og:title" content="Jorge Burgos — Computer Engineering @ UPRM" />
   <meta property="og:description" content="Backend and data systems: ETL pipelines, REST APIs, and serverless AWS. Seeking a Summer 2027 internship in backend, data engineering, automation, or cloud." />
   <meta property="og:image" content="https://jorgeburgos.me/images/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Jorge Burgos, Computer Engineering at UPRM: backend, data, automation, cloud" />
   <meta name="twitter:card" content="summary_large_image" />
+
+  <!-- Structured data: tells search engines this page is about a person -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Jorge Burgos",
+    "url": "https://jorgeburgos.me/",
+    "image": "https://jorgeburgos.me/images/og.png",
+    "jobTitle": "Computer Engineering Student",
+    "description": "Computer Engineering student at UPRM who builds backend and data systems: ETL pipelines, REST APIs, and serverless AWS.",
+    "email": "mailto:jorgeburgos859@gmail.com",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Mayagüez",
+      "addressRegion": "PR",
+      "addressCountry": "US"
+    },
+    "affiliation": {
+      "@type": "CollegeOrUniversity",
+      "name": "University of Puerto Rico at Mayagüez"
+    },
+    "knowsAbout": [
+      "Python",
+      "SQL",
+      "FastAPI",
+      "Flask",
+      "PostgreSQL",
+      "PostGIS",
+      "ETL pipelines",
+      "AWS Lambda",
+      "Docker",
+      "GitHub Actions"
+    ],
+    "knowsLanguage": [
+      "es",
+      "en"
+    ],
+    "sameAs": [
+      "https://github.com/jorge-burgos10",
+      "https://www.linkedin.com/in/jorge-burgos-b5a8748a/"
+    ]
+  }
+  </script>
 
   <!-- Marks the page as JS-enabled so scroll reveals only hide content when they can show it again -->
   <script>document.documentElement.classList.add("js");</script>
@@ -46,67 +93,9 @@
     rel="stylesheet"
   />
 
+  <link rel="stylesheet" href="styles.css" />
+
   <style>
-    /* ============================================================
-       Design tokens
-       ============================================================ */
-    :root {
-      --bg: #0d1117;          /* page background */
-      --bg-card: #151b23;     /* card / surface background */
-      --bg-chip: #1c242e;     /* chips and small tags */
-      --text: #e2e8f0;        /* primary text */
-      --text-muted: #94a3b3;  /* secondary text */
-      --accent: #56b6c2;      /* single muted teal accent */
-      --accent-dim: rgba(86, 182, 194, 0.12);
-      --border: #232b36;      /* subtle separators */
-      --font-mono: "JetBrains Mono", monospace;
-      --font-body: "Inter", system-ui, sans-serif;
-    }
-
-    /* ============================================================
-       Base
-       ============================================================ */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: var(--font-body);
-      font-size: 0.975rem;
-      line-height: 1.6;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    h1, h2, h3 {
-      font-family: var(--font-mono);
-      line-height: 1.25;
-    }
-
-    a {
-      color: var(--accent);
-      text-decoration: none;
-    }
-
-    a:hover,
-    a:focus-visible {
-      text-decoration: underline;
-    }
-
-    /* Shared section layout — compact vertical rhythm */
-    .wrap {
-      max-width: 920px;
-      margin: 0 auto;
-      padding: 0 1.5rem;
-    }
-
     section {
       padding: 3.25rem 0;
       border-top: 1px solid var(--border);
@@ -114,57 +103,6 @@
 
     section:first-of-type {
       border-top: none;
-    }
-
-    /* Numbered section headings, e.g. "01 // projects" */
-    .section-title {
-      font-size: 1.2rem;
-      margin-bottom: 1.5rem;
-      display: flex;
-      align-items: baseline;
-      gap: 0.6rem;
-    }
-
-    .section-title .num {
-      color: var(--accent);
-      font-size: 0.85rem;
-      font-weight: 400;
-    }
-
-    /* Typewriter intro — the whole hero types itself on the first visit */
-    /* The cursor is an empty inline with the bar drawn as an absolutely
-       positioned pseudo-element, so it takes no space in the line: adding
-       or removing it never pushes text onto another line, and it never
-       creates a line-break opportunity in the middle of a word. */
-    .typewriter-cursor {
-      position: relative;
-      animation: cursor-blink 0.85s step-end infinite;
-    }
-
-    .typewriter-cursor::after {
-      content: "";
-      position: absolute;
-      left: 1px;
-      top: 0;
-      bottom: 0;
-      width: 0.12em;
-      background: var(--accent);
-    }
-
-    @keyframes cursor-blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0; }
-    }
-
-    /* Waiting for its turn in the intro sequence */
-    [data-typewriter].typewriter-pending {
-      opacity: 0;
-    }
-
-    /* Text not typed yet: kept in place but invisible, so the layout
-       never shifts while typing */
-    .typewriter-rest {
-      opacity: 0;
     }
 
     .intro-deferred {
@@ -198,38 +136,6 @@
       }
     }
 
-    /* ============================================================
-       Top navigation
-       ============================================================ */
-    .nav {
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      background: rgba(13, 17, 23, 0.92);
-      backdrop-filter: blur(8px);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .nav-inner {
-      max-width: 920px;
-      margin: 0 auto;
-      padding: 0.8rem 1.5rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-family: var(--font-mono);
-      font-size: 0.85rem;
-    }
-
-    .nav-name {
-      color: var(--text);
-      font-weight: 700;
-    }
-
-    .nav-name .accent {
-      color: var(--accent);
-    }
-
     .nav-links {
       display: flex;
       gap: 1.4rem;
@@ -250,13 +156,6 @@
        ============================================================ */
     .hero {
       padding: 5rem 0 3.5rem;
-    }
-
-    .hero-kicker {
-      font-family: var(--font-mono);
-      color: var(--accent);
-      font-size: 0.85rem;
-      margin-bottom: 0.75rem;
     }
 
     .hero h1 {
@@ -283,48 +182,9 @@
       font-weight: 500;
     }
 
-    /* Quick facts row: location, graduation, availability */
-    .hero-facts {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.75rem 1.75rem;
-      font-family: var(--font-mono);
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      margin-bottom: 1.75rem;
-    }
-
     /* Direct children only: the typewriter adds its own inner spans */
     .hero-facts > span::before {
       content: "▸ ";
-      color: var(--accent);
-    }
-
-    .hero-links {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.9rem;
-    }
-
-    .btn {
-      font-family: var(--font-mono);
-      font-size: 0.85rem;
-      padding: 0.55rem 1.1rem;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      color: var(--text);
-      transition: border-color 0.2s ease, background 0.2s ease;
-    }
-
-    .btn:hover,
-    .btn:focus-visible {
-      text-decoration: none;
-      border-color: var(--accent);
-      background: var(--accent-dim);
-    }
-
-    .btn-primary {
-      border-color: var(--accent);
       color: var(--accent);
     }
 
@@ -522,15 +382,6 @@
       margin-bottom: 1.25rem;
     }
 
-    footer {
-      text-align: center;
-      color: var(--text-muted);
-      font-family: var(--font-mono);
-      font-size: 0.75rem;
-      padding: 1.75rem 1.5rem;
-      border-top: 1px solid var(--border);
-    }
-
     /* ============================================================
        Mobile adjustments
        ============================================================ */
@@ -547,25 +398,6 @@
         gap: 0.5rem 0.9rem;
         flex-wrap: wrap;
         justify-content: flex-end;
-      }
-    }
-
-    /* ============================================================
-       Shared polish: keyboard focus + smooth page-to-page transition
-       ============================================================ */
-    :focus-visible {
-      outline: 2px solid var(--accent);
-      outline-offset: 3px;
-      border-radius: 4px;
-    }
-
-    @view-transition {
-      navigation: auto;
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      @view-transition {
-        navigation: none;
       }
     }
 
@@ -748,13 +580,6 @@
       }
     }
 
-    /* "jb." logo in the nav */
-    .nav-name img {
-      display: block;
-      height: 1.75rem;
-      width: auto;
-    }
-
     /* ============================================================
        Experience — reuses the project card look
        ============================================================ */
@@ -785,30 +610,6 @@
       position: absolute;
       left: 0;
       color: var(--accent);
-    }
-
-    /* ============================================================
-       Accessibility + mobile fixes
-       ============================================================ */
-    /* Skip link — hidden until focused with the keyboard */
-    .skip-link {
-      position: absolute;
-      left: 1rem;
-      top: -3rem;
-      z-index: 20;
-      font-family: var(--font-mono);
-      font-size: 0.85rem;
-      color: var(--accent);
-      background: var(--bg-card);
-      border: 1px solid var(--accent);
-      border-radius: 6px;
-      padding: 0.45rem 0.9rem;
-      transition: top 0.15s ease;
-    }
-
-    .skip-link:focus {
-      top: 0.75rem;
-      text-decoration: none;
     }
 
     /* Intro buttons stay out of the keyboard order until they appear */
@@ -857,56 +658,6 @@
 
       .nav-links a {
         white-space: nowrap;
-      }
-    }
-
-    /* ============================================================
-       "jb." logo — strokes draw in, then the dots pop (first visit)
-       ============================================================ */
-    .nav-name svg {
-      display: block;
-      height: 1.75rem;
-      width: auto;
-      overflow: visible;
-    }
-
-    html.logo-intro .logo-stroke {
-      stroke-dasharray: 1;
-      stroke-dashoffset: 1;
-      animation: logo-draw 0.45s cubic-bezier(0.65, 0, 0.35, 1) var(--d) forwards;
-    }
-
-    html.logo-intro .logo-dot {
-      opacity: 0;
-      transform: scale(0);
-      transform-box: fill-box;
-      transform-origin: center;
-      animation: logo-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) var(--d) forwards;
-    }
-
-    @keyframes logo-draw {
-      to { stroke-dashoffset: 0; }
-    }
-
-    @keyframes logo-pop {
-      to { opacity: 1; transform: scale(1); }
-    }
-
-    /* ============================================================
-       Buttons — small press feedback
-       ============================================================ */
-    .btn {
-      display: inline-block;
-      transition: border-color 0.2s ease, background 0.2s ease, transform 0.1s ease;
-    }
-
-    .btn:active {
-      transform: translateY(1px) scale(0.98);
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .btn:active {
-        transform: none;
       }
     }
 
@@ -995,28 +746,6 @@
       border: 0;
     }
 
-    /* ============================================================
-       Polish — text wrapping, staggered entrances, hover elevation
-       ============================================================ */
-    /* No lone last words in headings; nicer paragraph rag */
-    h1, h2, h3 {
-      text-wrap: balance;
-    }
-
-    p, li {
-      text-wrap: pretty;
-    }
-
-    /* Items inside a section enter one after another the first time it
-       appears. "backwards" fill only holds the hidden start state during
-       the delay, so hover transforms keep working afterwards. */
-    @keyframes stagger-in {
-      from {
-        opacity: 0;
-        transform: translateY(12px);
-      }
-    }
-
     @media (prefers-reduced-motion: no-preference) {
       .js .visible .stagger-item {
         animation: stagger-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) backwards;
@@ -1042,22 +771,6 @@
     .skills-group:hover {
       border-color: #2f3a48;
       box-shadow: 0 10px 24px -14px rgba(0, 0, 0, 0.7);
-    }
-
-    /* ============================================================
-       Shared cover between the project card and the case study:
-       on navigation the cover morphs from one page to the other.
-       ============================================================ */
-    ::view-transition-group(car-tracking-cover) {
-      animation-duration: 0.5s;
-      animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
-    }
-
-    ::view-transition-old(car-tracking-cover),
-    ::view-transition-new(car-tracking-cover) {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
     }
 
     /* ============================================================
@@ -1168,31 +881,6 @@
       flex-grow: 0;
     }
 
-    /* ============================================================
-       Logo replay on click — a quicker redraw that
-       starts from a faint, partly drawn logo (never fully empty)
-       ============================================================ */
-    .nav-logo.logo-replay .logo-stroke {
-      stroke-dasharray: 1;
-      animation: logo-redraw 0.45s cubic-bezier(0.65, 0, 0.35, 1) calc(var(--d) * 0.5) both;
-    }
-
-    .nav-logo.logo-replay .logo-dot {
-      transform-box: fill-box;
-      transform-origin: center;
-      animation: logo-repop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) calc(var(--d) * 0.5) both;
-    }
-
-    @keyframes logo-redraw {
-      from { stroke-dashoffset: 0.85; stroke-opacity: 0.35; }
-      to { stroke-dashoffset: 0; stroke-opacity: 1; }
-    }
-
-    @keyframes logo-repop {
-      from { transform: scale(0.4); }
-      to { transform: scale(1); }
-    }
-
     /* "more about this role" — extra detail, collapsed by default */
     .experience-points strong {
       color: var(--text);
@@ -1289,7 +977,7 @@
        ============================================================ -->
   <nav class="nav">
     <div class="nav-inner">
-      <a href="#top" class="nav-name" aria-label="Jorge Burgos — home"><svg class="nav-logo" viewBox="0 0 64 64" width="28" height="28" aria-hidden="true" focusable="false"><g fill="none" stroke="#e2e8f0" stroke-width="7"><path class="logo-stroke" pathLength="1" style="--d: 0.1s" d="M17 23.5V48Q17 57 8.5 57"/><path class="logo-stroke" pathLength="1" style="--d: 0.3s" d="M28 10V49.5"/><circle class="logo-stroke" pathLength="1" style="--d: 0.5s" cx="37.5" cy="36.5" r="9.5"/></g><circle class="logo-dot" style="--d: 0.75s" cx="17" cy="13.5" r="4" fill="#e2e8f0"/><circle class="logo-dot" style="--d: 1.05s" cx="57" cy="45.5" r="4" fill="#56b6c2"/></svg></a>
+      <a href="#top" class="nav-name" aria-label="Jorge Burgos — home"><svg class="nav-logo" viewBox="0 0 64 64" width="28" height="28" aria-hidden="true" focusable="false"><g fill="none" stroke="#e2e8f0" stroke-width="7"><path class="logo-stroke" pathLength="1" style="--d: 0.1s" d="M17 23.5V48Q17 57 8.5 57"/><path class="logo-stroke" pathLength="1" style="--d: 0.3s" d="M28 10V49.5"/><path class="logo-stroke" pathLength="1" style="--d: 0.5s" d="M47 36.5A9.5 9.5 0 1 1 28 36.5A9.5 9.5 0 1 1 47 36.5"/></g><circle class="logo-dot" style="--d: 0.75s" cx="17" cy="13.5" r="4" fill="#e2e8f0"/><circle class="logo-dot" style="--d: 1.05s" cx="57" cy="45.5" r="4" fill="#56b6c2"/></svg></a>
       <div class="nav-links">
         <a href="#experience">experience</a>
         <a href="#projects">projects</a>
