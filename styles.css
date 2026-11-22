@@ -339,6 +339,36 @@ p, li {
   object-fit: cover;
 }
 
+/* Inside the morph, show the destination cover right away and drop the
+   old one quickly, so its label doesn't appear twice while it moves. */
+::view-transition-old(car-tracking-cover) {
+  animation: vt-page-out 0.12s ease-in both;
+}
+
+::view-transition-new(car-tracking-cover) {
+  animation: none;
+}
+
+/* The rest of the page: the old page fades out first, then the new one
+   fades in, so the two pages' text never shows on top of each other.
+   (The default crossfade overlaps them for a moment.) The short gap
+   shows only the plain background. */
+::view-transition-old(root) {
+  animation: vt-page-out 0.14s ease-in both;
+}
+
+::view-transition-new(root) {
+  animation: vt-page-in 0.22s ease-out 0.12s both;
+}
+
+@keyframes vt-page-out {
+  to { opacity: 0; }
+}
+
+@keyframes vt-page-in {
+  from { opacity: 0; }
+}
+
 /* ============================================================
    Logo replay on click — a quicker redraw that
    starts from a faint, partly drawn logo (never fully empty)
