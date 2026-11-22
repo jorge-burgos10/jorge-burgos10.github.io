@@ -779,51 +779,24 @@
     }
 
     /* ============================================================
-       Hero pings — now and then a GPS "ping" lights up on a grid
-       intersection, like a vehicle reporting its position.
+       Hero data packets — small teal packets with a fading trail run
+       along the grid lines and turn corners, like data moving between
+       systems. Masked like the grid so they fade toward the edges.
        ============================================================ */
-    .hero-pings {
+    .hero-packets {
       position: absolute;
       top: 0;
       bottom: 0;
       left: 50%;
       width: 100vw;
+      height: 100%;
       transform: translateX(-50%);
       z-index: -1;
       pointer-events: none;
-      overflow: hidden;
-    }
-
-    .hero-ping {
-      position: absolute;
-      width: 6px;
-      height: 6px;
-      margin: -3px 0 0 -3px;
-      border-radius: 50%;
-      background: var(--accent);
-      opacity: 0;
-      animation: hero-ping 2.8s ease-out forwards;
-    }
-
-    .hero-ping::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      border-radius: 50%;
-      border: 1px solid var(--accent);
-      animation: hero-ping-ring 2.8s ease-out forwards;
-    }
-
-    @keyframes hero-ping {
-      0% { opacity: 0; transform: scale(0.4); }
-      12% { opacity: 0.85; transform: scale(1); }
-      65% { opacity: 0.55; }
-      100% { opacity: 0; }
-    }
-
-    @keyframes hero-ping-ring {
-      0% { transform: scale(1); opacity: 0.7; }
-      70%, 100% { transform: scale(7); opacity: 0; }
+      /* A wider fade than the grid's, so packets in the open space to the
+         right of the text stay visible */
+      -webkit-mask-image: radial-gradient(ellipse 75% 100% at 45% 40%, #000 0%, #000 35%, transparent 95%);
+      mask-image: radial-gradient(ellipse 75% 100% at 45% 40%, #000 0%, #000 35%, transparent 95%);
     }
 
     /* ============================================================
@@ -1958,78 +1931,247 @@
     }
 
     /* ============================================================
-       Hero pings
+       Hero data packets
        ------------------------------------------------------------
-       Every ~1.6 s a ping appears on a free grid intersection of the
-       hero backdrop (never on top of the text), only while the hero is
-       on screen and the tab is visible. Off for reduced motion.
+       A canvas over the hero grid:
+       - packets travel L-shaped (or straight) routes along the grid
+         lines with a glowing head and a smooth fading trail;
+       - the intersection where a packet arrives flashes briefly;
+       - a few grid cells glow faintly now and then, so the grid feels
+         alive even between packets.
+       Nothing is drawn under the text or buttons. Runs only while the
+       hero is on screen; off for reduced motion.
        ============================================================ */
-    function startHeroPings() {
+    function startHeroPackets() {
       if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
       const hero = document.querySelector(".hero");
-      if (!hero || hero.querySelector(".hero-pings")) return;
+      if (!hero || hero.querySelector(".hero-packets")) return;
 
       const GRID = 44; // same spacing as the hero grid
-      const layer = document.createElement("div");
-      layer.className = "hero-pings";
-      layer.setAttribute("aria-hidden", "true");
-      hero.prepend(layer);
+      const TRAIL = 120; // trail length in px
+      const TEAL = "86, 182, 194";
+      const canvas = document.createElement("canvas");
+      canvas.className = "hero-packets";
+      canvas.setAttribute("aria-hidden", "true");
+      hero.prepend(canvas);
+      const ctx = canvas.getContext("2d");
+      const textBlocks = [...hero.children].filter((el) => el !== canvas);
 
+      let width = 0;
+      let height = 0;
+      const resize = () => {
+        const ratio = window.devicePixelRatio || 1;
+        width = canvas.clientWidth;
+        height = canvas.clientHeight;
+        canvas.width = Math.round(width * ratio);
+        canvas.height = Math.round(height * ratio);
+        ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+      };
+      resize();
+      window.addEventListener("resize", resize);
+
+      // Boxes of the actual text lines and buttons (not the full width of
+      // each block), so packets can use the empty space beside them.
+      const textRects = () => {
+        const box = canvas.getBoundingClientRect();
+        return textBlocks.flatMap((el) => {
+          const range = document.createRange();
+          range.selectNodeContents(el);
+          return [...range.getClientRects()].map((r) => ({
+            left: r.left - box.left,
+            right: r.right - box.left,
+            top: r.top - box.top,
+            bottom: r.bottom - box.top,
+          }));
+        });
+      };
+      const pad = () => (width < 640 ? 6 : 14);
+      const hitsText = (x, y, rects) =>
+        rects.some((r) => x > r.left - pad() && x < r.right + pad() && y > r.top - pad() && y < r.bottom + pad());
+
+      const pointAt = (route, d) => {
+        let rest = Math.max(0, d);
+        for (let i = 1; i < route.length; i++) {
+          const [x0, y0] = route[i - 1];
+          const [x1, y1] = route[i];
+          const seg = Math.abs(x1 - x0) + Math.abs(y1 - y0);
+          if (rest <= seg) {
+            const f = seg ? rest / seg : 0;
+            return [x0 + (x1 - x0) * f, y0 + (y1 - y0) * f];
+          }
+          rest -= seg;
+        }
+        return route[route.length - 1];
+      };
+
+      const newPacket = () => {
+        const cols = Math.floor(width / GRID);
+        const rows = Math.floor(height / GRID);
+        const rects = textRects();
+        const at = (n, min) => (min + Math.floor(Math.random() * Math.max(1, n - min + 1))) * GRID;
+        for (let tries = 0; tries < 30; tries++) {
+          const sx = at(cols, 0), sy = at(rows, 1), ex = at(cols, 0);
+          // Some routes run straight along one line; the rest turn a corner.
+          const ey = Math.random() < 0.35 ? sy : at(rows, 1);
+          if (ey > height || sy > height) continue;
+          const route = Math.random() < 0.5
+            ? [[sx, sy], [ex, sy], [ex, ey]]
+            : [[sx, sy], [sx, ey], [ex, ey]];
+          const length = Math.abs(ex - sx) + Math.abs(ey - sy);
+          if (length < GRID * 4 || length > GRID * 14) continue;
+          let clear = true;
+          for (let d = 0; d <= length && clear; d += 8) {
+            const [x, y] = pointAt(route, d);
+            if (hitsText(x, y, rects)) clear = false;
+          }
+          if (clear) return { route, length, t: 0, speed: 85 + Math.random() * 45, arrived: false };
+        }
+        return null;
+      };
+
+      const newCell = () => {
+        const rects = textRects();
+        for (let tries = 0; tries < 10; tries++) {
+          const x = Math.floor(Math.random() * (width / GRID)) * GRID;
+          const y = Math.floor(Math.random() * (height / GRID)) * GRID;
+          if (!hitsText(x + GRID / 2, y + GRID / 2, rects)) {
+            return { x, y, t: 0, life: 1.6 + Math.random() * 1.2 };
+          }
+        }
+        return null;
+      };
+
+      let packets = [];
+      let flashes = [];
+      let cells = [];
       let heroVisible = true;
-      if ("IntersectionObserver" in window) {
-        new IntersectionObserver((entries) => {
-          heroVisible = entries[0].isIntersecting;
-        }).observe(hero);
-      }
+      let running = false;
+      let last = 0;
+      let nextPacket = 0;
+      let nextCell = 0;
 
-      const textBlocks = [...hero.children].filter((el) => el !== layer);
+      const drawPacket = (packet) => {
+        const head = Math.min(packet.t, packet.length);
+        const tail = Math.max(0, packet.t - TRAIL);
+        if (tail >= packet.length) return;
 
-      const spawn = () => {
-        if (document.hidden || !heroVisible) return;
-        if (layer.childElementCount >= 3) return;
+        // Trail: short line pieces whose opacity rises toward the head.
+        ctx.lineCap = "round";
+        ctx.lineWidth = 1.6;
+        const steps = 24;
+        let [px, py] = pointAt(packet.route, tail);
+        for (let i = 1; i <= steps; i++) {
+          const d = tail + ((head - tail) * i) / steps;
+          const [x, y] = pointAt(packet.route, d);
+          const strength = (d - (packet.t - TRAIL)) / TRAIL;
+          ctx.strokeStyle = `rgba(${TEAL}, ${0.85 * strength * strength})`;
+          ctx.beginPath();
+          ctx.moveTo(px, py);
+          ctx.lineTo(x, y);
+          ctx.stroke();
+          px = x;
+          py = y;
+        }
 
-        const box = layer.getBoundingClientRect();
-        const blocks = textBlocks.map((el) => el.getBoundingClientRect());
-        const cols = Math.floor(box.width / GRID);
-        const rows = Math.floor(box.height / GRID);
-
-        for (let tries = 0; tries < 25; tries++) {
-          const x = (1 + Math.floor(Math.random() * (cols - 1))) * GRID;
-          const y = (1 + Math.floor(Math.random() * (rows - 1))) * GRID;
-
-          // Stay where the grid is visible (it fades out toward the edges).
-          const nx = (x / box.width - 0.35) / 0.6;
-          const ny = (y / box.height - 0.35) / 0.85;
-          if (nx * nx + ny * ny > 0.6) continue;
-
-          // Never under the text or buttons.
-          const px = box.left + x;
-          const py = box.top + y;
-          const pad = 18;
-          const overText = blocks.some(
-            (b) => px > b.left - pad && px < b.right + pad && py > b.top - pad && py < b.bottom + pad
-          );
-          if (overText) continue;
-
-          const ping = document.createElement("span");
-          ping.className = "hero-ping";
-          ping.style.left = `${x}px`;
-          ping.style.top = `${y}px`;
-          ping.addEventListener("animationend", () => ping.remove(), { once: true });
-          layer.appendChild(ping);
-          return;
+        // Head: soft glow plus a bright core, only while still moving.
+        if (packet.t <= packet.length) {
+          const [hx, hy] = pointAt(packet.route, head);
+          const glow = ctx.createRadialGradient(hx, hy, 0, hx, hy, 10);
+          glow.addColorStop(0, `rgba(${TEAL}, 0.45)`);
+          glow.addColorStop(1, `rgba(${TEAL}, 0)`);
+          ctx.fillStyle = glow;
+          ctx.beginPath();
+          ctx.arc(hx, hy, 10, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = "rgba(210, 244, 248, 0.95)";
+          ctx.beginPath();
+          ctx.arc(hx, hy, 2.2, 0, Math.PI * 2);
+          ctx.fill();
         }
       };
 
-      setInterval(spawn, 1600);
-      spawn();
+      const frame = (now) => {
+        if (!heroVisible) {
+          running = false;
+          return;
+        }
+        const dt = Math.min(0.05, (now - (last || now)) / 1000);
+        last = now;
+
+        if (now > nextPacket && packets.length < 3) {
+          const packet = newPacket();
+          if (packet) packets.push(packet);
+          nextPacket = now + 800 + Math.random() * 900;
+        }
+        if (now > nextCell && cells.length < 6) {
+          const cell = newCell();
+          if (cell) cells.push(cell);
+          nextCell = now + 350 + Math.random() * 450;
+        }
+
+        ctx.clearRect(0, 0, width, height);
+
+        // Faint glowing cells (fade in, then out).
+        cells.forEach((cell) => {
+          cell.t += dt;
+          const k = cell.t / cell.life;
+          const alpha = 0.07 * Math.sin(Math.PI * Math.min(1, k));
+          ctx.fillStyle = `rgba(${TEAL}, ${alpha})`;
+          ctx.fillRect(cell.x + 1, cell.y + 1, GRID - 1, GRID - 1);
+        });
+        cells = cells.filter((cell) => cell.t < cell.life);
+
+        packets.forEach((packet) => {
+          packet.t += packet.speed * dt;
+          if (!packet.arrived && packet.t >= packet.length) {
+            packet.arrived = true;
+            const [x, y] = packet.route[packet.route.length - 1];
+            flashes.push({ x, y, t: 0 });
+          }
+          drawPacket(packet);
+        });
+        packets = packets.filter((packet) => packet.t - TRAIL < packet.length);
+
+        // Arrival flash: a small ring that expands and fades.
+        flashes.forEach((flash) => {
+          flash.t += dt;
+          const k = Math.min(1, flash.t / 0.7);
+          ctx.strokeStyle = `rgba(${TEAL}, ${0.7 * (1 - k)})`;
+          ctx.lineWidth = 1.2;
+          ctx.beginPath();
+          ctx.arc(flash.x, flash.y, 3 + 11 * k, 0, Math.PI * 2);
+          ctx.stroke();
+          ctx.fillStyle = `rgba(${TEAL}, ${0.9 * (1 - k)})`;
+          ctx.beginPath();
+          ctx.arc(flash.x, flash.y, 2.5, 0, Math.PI * 2);
+          ctx.fill();
+        });
+        flashes = flashes.filter((flash) => flash.t < 0.7);
+
+        requestAnimationFrame(frame);
+      };
+
+      const start = () => {
+        if (running) return;
+        running = true;
+        last = 0;
+        requestAnimationFrame(frame);
+      };
+
+      if ("IntersectionObserver" in window) {
+        new IntersectionObserver((entries) => {
+          heroVisible = entries[0].isIntersecting;
+          if (heroVisible) start();
+        }).observe(hero);
+      }
+      start();
     }
 
     // Shows the hero buttons and lets the sections below start appearing.
     function revealPage() {
       document.body.classList.add("intro-ready");
       startScrollEffects();
-      startHeroPings();
+      startHeroPackets();
     }
 
     async function runIntroTypewriter() {
