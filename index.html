@@ -1760,6 +1760,18 @@
       ).observe(sig);
     })();
 
+    /* ============================================================
+       A hello for whoever opens the developer console
+       ============================================================ */
+    console.log(
+      "%cjb.%c\n\nHi! Thanks for looking under the hood.\n" +
+        "This site is plain HTML, CSS, and JavaScript, no framework.\n" +
+        "Source: https://github.com/jorge-burgos10/jorge-burgos10.github.io\n" +
+        "Looking for a Summer 2027 internship: jorgeburgos859@gmail.com",
+      "font: 700 28px 'JetBrains Mono', monospace; color: #56b6c2;",
+      "font: 13px 'JetBrains Mono', monospace; color: inherit;"
+    );
+
     const grid = document.getElementById("projects-grid");
     PROJECTS.forEach((project) => grid.appendChild(buildCard(project)));
 
