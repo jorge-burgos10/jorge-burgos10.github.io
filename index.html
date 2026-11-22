@@ -182,11 +182,6 @@
       font-weight: 500;
     }
 
-    /* Direct children only: the typewriter adds its own inner spans */
-    .hero-facts > span::before {
-      content: "▸ ";
-      color: var(--accent);
-    }
 
     /* ============================================================
        Projects
@@ -977,6 +972,76 @@
       }
     }
 
+
+    /* ============================================================
+       Icons — Rune Icons (Apache 2.0) outline glyphs; GitHub and
+       LinkedIn logos from Simple Icons
+       ============================================================ */
+    .ico {
+      flex: none;
+      width: 1em;
+      height: 1em;
+    }
+
+    .hero-facts > span {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+
+    .ico-fact {
+      width: 14px;
+      height: 14px;
+      color: var(--accent);
+    }
+
+    .btn-icon {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-icon .ico {
+      width: 15px;
+      height: 15px;
+    }
+
+    /* Copy email: the mail icon turns into a check while "copied" shows */
+    .btn-icon .ico-check {
+      display: none;
+      color: var(--accent);
+    }
+
+    .btn-icon.copied .ico-mail {
+      display: none;
+    }
+
+    .btn-icon.copied .ico-check {
+      display: block;
+    }
+
+    .project-links a {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .ico-arrow {
+      width: 13px;
+      height: 13px;
+      transition: transform 0.2s ease;
+    }
+
+    .project-links a:hover .ico-arrow,
+    .project-links a:focus-visible .ico-arrow {
+      transform: translateX(2px);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .ico-arrow {
+        transition: none;
+      }
+    }
   </style>
 </head>
 
@@ -1013,15 +1078,15 @@
         because a few lines of code can do something big.
       </p>
       <div class="hero-facts">
-        <span data-typewriter>Mayagüez, Puerto Rico</span>
-        <span data-typewriter>B.S. December 2027</span>
-        <span data-typewriter>Internships: backend · data engineering · automation · cloud</span>
+        <span data-typewriter><svg class="ico ico-fact" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 10C20 14.993 14.461 20.193 12.601 21.799C12.4277 21.9293 12.2168 21.9998 12 21.9998C11.7832 21.9998 11.5723 21.9293 11.399 21.799C9.539 20.193 4 14.993 4 10C4 7.87827 4.84285 5.84344 6.34315 4.34315C7.84344 2.84285 9.87827 2 12 2C14.1217 2 16.1566 2.84285 17.6569 4.34315C19.1571 5.84344 20 7.87827 20 10Z"/><path d="M12 13C13.6569 13 15 11.6569 15 10C15 8.34315 13.6569 7 12 7C10.3431 7 9 8.34315 9 10C9 11.6569 10.3431 13 12 13Z"/></svg><span>Mayagüez, Puerto Rico</span></span>
+        <span data-typewriter><svg class="ico ico-fact" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M8 2V6M16 2V6M3 10H21M5 4H19C20.1046 4 21 4.89543 21 6V20C21 21.1046 20.1046 22 19 22H5C3.89543 22 3 21.1046 3 20V6C3 4.89543 3.89543 4 5 4Z"/></svg><span>B.S. December 2027</span></span>
+        <span data-typewriter><svg class="ico ico-fact" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20.9999 21.0002L16.6599 16.6602M19 11C19 15.4183 15.4183 19 11 19C6.58172 19 3 15.4183 3 11C3 6.58172 6.58172 3 11 3C15.4183 3 19 6.58172 19 11Z"/></svg><span>Internships: backend · data engineering · automation · cloud</span></span>
       </div>
       <div class="hero-links intro-deferred">
-        <a class="btn btn-primary" href="resume/Jorge_Burgos_Resume.pdf" target="_blank" rel="noopener noreferrer">Resume</a>
-        <a class="btn" href="https://github.com/jorge-burgos10" target="_blank" rel="noopener noreferrer">GitHub</a>
-        <a class="btn" href="https://www.linkedin.com/in/jorge-burgos-b5a8748a/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-        <a class="btn" href="mailto:jorgeburgos859@gmail.com" data-copy-email="jorgeburgos859@gmail.com">Email</a>
+        <a class="btn btn-primary btn-icon" href="resume/Jorge_Burgos_Resume.pdf" target="_blank" rel="noopener noreferrer"><svg class="ico " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14 2H6C5.46957 2 4.96086 2.21072 4.58579 2.58579C4.21071 2.96086 4 3.46957 4 4V20C4 20.5304 4.21071 21.0391 4.58579 21.4142C4.96086 21.7893 5.46957 22 6 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V8M14 2C14.3166 1.99949 14.6301 2.06161 14.9225 2.18277C15.215 2.30394 15.4806 2.48176 15.704 2.706L19.292 6.294C19.5168 6.51751 19.6952 6.78335 19.8167 7.07616C19.9382 7.36898 20.0005 7.68297 20 8M14 2V7C14 7.26522 14.1054 7.51957 14.2929 7.70711C14.4804 7.89464 14.7348 8 15 8L20 8M10 9H8M16 13H8M16 17H8"/></svg>Resume</a>
+        <a class="btn btn-icon" href="https://github.com/jorge-burgos10" target="_blank" rel="noopener noreferrer"><svg class="ico " viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>GitHub</a>
+        <a class="btn btn-icon" href="https://www.linkedin.com/in/jorge-burgos-b5a8748a/" target="_blank" rel="noopener noreferrer"><svg class="ico " viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>LinkedIn</a>
+        <a class="btn btn-icon" href="mailto:jorgeburgos859@gmail.com" data-copy-email="jorgeburgos859@gmail.com"><svg class="ico ico-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M22 7L13.009 12.727C12.7039 12.9042 12.3573 12.9976 12.0045 12.9976C11.6517 12.9976 11.3051 12.9042 11 12.727L2 7M4 4H20C21.1046 4 22 4.89543 22 6V18C22 19.1046 21.1046 20 20 20H4C2.89543 20 2 19.1046 2 18V6C2 4.89543 2.89543 4 4 4Z"/></svg><svg class="ico ico-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 6L9 17L4 12"/></svg>Email</a>
       </div>
     </section>
 
@@ -1262,7 +1327,7 @@
         Interested in working together, or have an internship opportunity in
         backend, data engineering, automation, or cloud? My inbox is open.
       </p>
-      <a class="btn btn-primary" href="mailto:jorgeburgos859@gmail.com" data-copy-email="jorgeburgos859@gmail.com">jorgeburgos859@gmail.com</a>
+      <a class="btn btn-primary btn-icon" href="mailto:jorgeburgos859@gmail.com" data-copy-email="jorgeburgos859@gmail.com"><svg class="ico ico-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M22 7L13.009 12.727C12.7039 12.9042 12.3573 12.9976 12.0045 12.9976C11.6517 12.9976 11.3051 12.9042 11 12.727L2 7M4 4H20C21.1046 4 22 4.89543 22 6V18C22 19.1046 21.1046 20 20 20H4C2.89543 20 2 19.1046 2 18V6C2 4.89543 2.89543 4 4 4Z"/></svg><svg class="ico ico-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 6L9 17L4 12"/></svg>jorgeburgos859@gmail.com</a>
     </section>
   </main>
 
@@ -1367,7 +1432,8 @@
       if (project.detailUrl) {
         const detail = document.createElement("a");
         detail.href = project.detailUrl;
-        detail.textContent = "case study →";
+        detail.textContent = "case study";
+        detail.insertAdjacentHTML("beforeend", '<svg class="ico ico-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 12H19M12 19L19 12L12 5"/></svg>');
         links.appendChild(detail);
       }
 
@@ -1375,7 +1441,8 @@
       link.href = project.url;
       link.target = "_blank";
       link.rel = "noopener noreferrer";
-      link.textContent = "repo →";
+      link.textContent = "repo";
+      link.insertAdjacentHTML("beforeend", '<svg class="ico ico-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M17 17V7H7M17 7L7 17"/></svg>');
       links.appendChild(link);
 
       meta.appendChild(links);
