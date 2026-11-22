@@ -2396,6 +2396,24 @@
       runIntroTypewriter();
     }
 
+    // Arriving from a case study at a spot where its project cover is off
+    // screen (the "jb." logo goes to the top of the page): skip the cover
+    // morph, or the cover would fly across the hero on its way down. It
+    // fades out with the rest of the old page instead.
+    window.addEventListener("pagereveal", (event) => {
+      if (!event.viewTransition) return;
+      document.querySelectorAll(".project-thumb").forEach((thumb) => {
+        const name = thumb.style.viewTransitionName;
+        if (!name) return;
+        const box = thumb.getBoundingClientRect();
+        if (box.bottom > 0 && box.top < window.innerHeight) return;
+        thumb.style.viewTransitionName = "";
+        event.viewTransition.finished.finally(() => {
+          thumb.style.viewTransitionName = name;
+        });
+      });
+    });
+
     /* ============================================================
        About — EN / ES toggle
        ============================================================ */
