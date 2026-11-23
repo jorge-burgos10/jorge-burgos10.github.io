@@ -73,7 +73,11 @@
   <!-- Draw the "jb." logo once per browser session (skipped for reduced motion) -->
   <script>
     try {
+      // Also skipped when arriving from another page of this site (e.g. the
+      // case study): the visitor has already seen it.
+      const fromThisSite = document.referrer.startsWith(location.origin + "/");
       if (
+        !fromThisSite &&
         !sessionStorage.getItem("logoAnimated") &&
         !window.matchMedia("(prefers-reduced-motion: reduce)").matches
       ) {
@@ -1636,6 +1640,17 @@
        swapped for the same SVG inline so its lines can draw themselves
        the first time the card scrolls into view.
        ============================================================ */
+    // True when arriving from another page of this site (a case study,
+    // the 404 page...). The intro is skipped then, even if the browser
+    // started a new session in between (a new tab, a restored tab).
+    const cameFromThisSite = (() => {
+      try {
+        return new URL(document.referrer).origin === location.origin;
+      } catch (error) {
+        return false;
+      }
+    })();
+
     // True when arriving from a case study page (link or back button).
     const cameFromCaseStudy = (() => {
       try {
@@ -2365,7 +2380,7 @@
     // (e.g. coming back from a case study) show the page right away.
     let introSeen = false;
     try {
-      introSeen = sessionStorage.getItem("introSeen") === "1";
+      introSeen = sessionStorage.getItem("introSeen") === "1" || cameFromThisSite;
       sessionStorage.setItem("introSeen", "1");
     } catch (error) {
       // Storage unavailable (private mode, etc.) — just play the intro.
@@ -2408,9 +2423,10 @@
         const box = thumb.getBoundingClientRect();
         if (box.bottom > 0 && box.top < window.innerHeight) return;
         thumb.style.viewTransitionName = "";
-        event.viewTransition.finished.finally(() => {
+        const restore = () => {
           thumb.style.viewTransitionName = name;
-        });
+        };
+        event.viewTransition.finished.then(restore, restore);
       });
     });
 
