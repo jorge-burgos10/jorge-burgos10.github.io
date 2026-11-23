@@ -1129,49 +1129,6 @@
       to { fill-opacity: 1; stroke-opacity: 0; }
     }
 
-    /* ============================================================
-       Glare - a soft diagonal shine sweeps across a project card
-       when the pointer comes over it
-       ============================================================ */
-    .project-card {
-      position: relative;
-    }
-
-    .project-card::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      border-radius: inherit;
-      pointer-events: none;
-      background: linear-gradient(
-        115deg,
-        transparent 40%,
-        rgba(255, 255, 255, 0.07) 46%,
-        rgba(120, 210, 222, 0.13) 50%,
-        rgba(255, 255, 255, 0.07) 54%,
-        transparent 60%
-      );
-      background-size: 300% 100%;
-      background-position: 100% 0;
-      background-repeat: no-repeat;
-    }
-
-    @media (prefers-reduced-motion: no-preference) {
-      .project-card:hover::after {
-        background-position: 0% 0;
-        transition: background-position 0.9s cubic-bezier(0.22, 1, 0.36, 1);
-      }
-    }
-
-    /* ============================================================
-       Magnetic hero buttons - with a mouse, a button leans a few
-       pixels toward the pointer as it gets close
-       ============================================================ */
-    .hero-links .btn {
-      translate: var(--mx, 0px) var(--my, 0px);
-      transition: border-color 0.2s ease, background 0.2s ease, transform 0.1s ease,
-        translate 0.25s cubic-bezier(0.22, 1, 0.36, 1);
-    }
   </style>
 </head>
 
@@ -1899,41 +1856,6 @@
       const icon = `<svg class="ico ico-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">${path}</svg>`;
       return `<span class="arrow-slide arrow-${direction}" aria-hidden="true">${icon}${icon}</span>`;
     }
-
-    /* ============================================================
-       Magnetic hero buttons (mouse only, off for reduced motion)
-       ============================================================ */
-    (() => {
-      const area = document.querySelector(".hero-links");
-      if (!area || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-      const buttons = [...area.querySelectorAll(".btn")];
-      const RANGE = 70; // px around a button where the pull starts
-      const MAX = 6; // px of movement at most
-
-      const reset = () => buttons.forEach((button) => {
-        button.style.setProperty("--mx", "0px");
-        button.style.setProperty("--my", "0px");
-      });
-
-      document.addEventListener("pointermove", (event) => {
-        if (event.pointerType !== "mouse") return;
-        buttons.forEach((button) => {
-          const r = button.getBoundingClientRect();
-          const dx = event.clientX - (r.left + r.width / 2);
-          const dy = event.clientY - (r.top + r.height / 2);
-          // distance from the button's edge, not its center
-          const ox = Math.max(0, Math.abs(dx) - r.width / 2);
-          const oy = Math.max(0, Math.abs(dy) - r.height / 2);
-          const pull = Math.max(0, 1 - Math.hypot(ox, oy) / RANGE);
-          const mx = Math.max(-MAX, Math.min(MAX, dx * 0.15)) * pull;
-          const my = Math.max(-MAX, Math.min(MAX, dy * 0.25)) * pull;
-          button.style.setProperty("--mx", `${mx.toFixed(1)}px`);
-          button.style.setProperty("--my", `${my.toFixed(1)}px`);
-        });
-      }, { passive: true });
-      document.documentElement.addEventListener("pointerleave", reset);
-      window.addEventListener("blur", reset);
-    })();
 
     const grid = document.getElementById("projects-grid");
     PROJECTS.forEach((project) => grid.appendChild(buildCard(project)));
