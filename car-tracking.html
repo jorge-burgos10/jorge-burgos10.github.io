@@ -153,26 +153,40 @@
     }
 
     /* ============================================================
-       Tech stack chips
+       Tech stack — one card with a row per layer, in the order the
+       data flows: the label on the left, its tools on the right.
+       Every row has the same shape, so it stays even at any width.
        ============================================================ */
     .stack-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 1.1rem;
-    }
-
-    .stack-group {
       background: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: 8px;
-      padding: 1.2rem 1.4rem;
+      overflow: hidden;
+    }
+
+    .stack-group {
+      display: grid;
+      grid-template-columns: 11rem 1fr;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.95rem 1.4rem;
+    }
+
+    .stack-group + .stack-group {
+      border-top: 1px solid var(--border);
     }
 
     .stack-group h3 {
       font-size: 0.8rem;
       color: var(--accent);
       font-weight: 500;
-      margin-bottom: 0.8rem;
+    }
+
+    @media (max-width: 560px) {
+      .stack-group {
+        grid-template-columns: 1fr;
+        gap: 0.6rem;
+      }
     }
 
     .stack-group h3::before {
@@ -343,12 +357,11 @@
     }
 
     .stack-group {
-      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      transition: background 0.2s ease;
     }
 
     .stack-group:hover {
-      border-color: #2f3a48;
-      box-shadow: 0 10px 24px -14px rgba(0, 0, 0, 0.7);
+      background: rgba(255, 255, 255, 0.02);
     }
 
     .figure {
@@ -540,6 +553,15 @@
       <h2 class="section-title" data-typewriter-scroll><span class="num">02</span> <span class="label">tech stack</span></h2>
       <div class="stack-grid">
         <div class="stack-group">
+          <h3>etl</h3>
+          <ul class="chip-list">
+            <li>Python</li>
+            <li>pandas</li>
+            <li>pyarrow</li>
+            <li>Parquet</li>
+          </ul>
+        </div>
+        <div class="stack-group">
           <h3>backend &amp; data</h3>
           <ul class="chip-list">
             <li>FastAPI</li>
@@ -557,15 +579,6 @@
             <li>Plotly</li>
             <li>pandas</li>
             <li>requests</li>
-          </ul>
-        </div>
-        <div class="stack-group">
-          <h3>etl</h3>
-          <ul class="chip-list">
-            <li>Python</li>
-            <li>pandas</li>
-            <li>pyarrow</li>
-            <li>Parquet</li>
           </ul>
         </div>
         <div class="stack-group">
